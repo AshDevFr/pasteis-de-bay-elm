@@ -289,16 +289,16 @@ applyTime model time =
             Random.initialSeed (floor (Time.inMilliseconds time))
 
         operationsToRun =
-            case model.lastTick of
-                Nothing ->
-                    1
-
-                Just lastTick ->
-                    let
-                        elapsedTime =
-                            (Time.inMilliseconds time) - (Time.inMilliseconds lastTick)
-                    in
-                        Basics.max (floor (elapsedTime / 100)) 1
+            model.lastTick
+                |> Maybe.andThen
+                    (\lastTick ->
+                        let
+                            elapsedTime =
+                                (Time.inMilliseconds time) - (Time.inMilliseconds lastTick)
+                        in
+                            Just <| Basics.max (floor (elapsedTime / 100)) 1
+                    )
+                |> Maybe.withDefault 1
 
         ( pasteisSimulations, seed1 ) =
             Utils.randomMultipleFloat 0 100 operationsToRun seed0
@@ -331,9 +331,8 @@ applyTime_ model { pasteisSimulation, doughCostSimulation } =
 
 makeOperations : Model -> Model
 makeOperations model =
-    case model.computingModule of
-        Nothing ->
-            model
-
-        Just mod ->
-            { model | computingModule = Just (Computing.makeOperations mod) }
+    { model
+        | computingModule =
+            model.computingModule
+                |> Maybe.map Computing.makeOperations
+    }
