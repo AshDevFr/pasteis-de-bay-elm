@@ -300,22 +300,24 @@ applyTime model time =
                     )
                 |> Maybe.withDefault 1
 
-        ( pasteisSimulations, seed1 ) =
-            Utils.randomMultipleFloat 0 100 operationsToRun seed0
+        step : Int -> ( Model, Random.Seed ) -> ( Model, Random.Seed )
+        step it ( model, seed ) =
+            let
+                ( pasteisSimulation, seed1 ) =
+                    Utils.randomFloat 0 100 seed
 
-        ( doughCostSimulations, seed2 ) =
-            Utils.randomMultipleFloat 0 100 operationsToRun seed1
+                ( doughCostSimulation, seed2 ) =
+                    Utils.randomFloat 0 100 seed1
+            in
+                ( applyTime_ model (Simulations pasteisSimulation doughCostSimulation), seed2 )
 
-        updatedModel =
-            setLastTick model time
-
-        allSimulations =
-            List.map2 Simulations pasteisSimulations doughCostSimulations
-
-        reducer simulations model =
-            applyTime_ model simulations
+        range =
+            List.range 1 operationsToRun
     in
-        List.foldl reducer updatedModel allSimulations
+        setLastTick model time
+            |> \updatedModel ->
+                List.foldl step ( updatedModel, seed0 ) range
+                    |> Tuple.first
 
 
 applyTime_ : Model -> Simulations -> Model
