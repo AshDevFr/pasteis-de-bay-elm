@@ -2,20 +2,15 @@ port module Main exposing (..)
 
 import Html exposing (..)
 import Material
-import Material.Scheme
-import Material.Button as Button
-import Material.Icon as Icon
-import Material.Options as Options exposing (css)
-import Material.Grid exposing (grid, cell, size, Device(..), Align(..), align)
 import Time exposing (Time, every, second, millisecond)
 import Random
 import Json.Decode as Decode exposing (decodeValue)
-import FormatNumber exposing (formatFloat, formatInt, usLocale)
 import Models exposing (..)
 import Utils exposing (..)
 import Business as Business
 import Manufacturing as Manufacturing
 import Computing as Computing
+import Views.Main as MainView
 
 
 main : Program (Maybe Decode.Value) Model Msg
@@ -168,96 +163,6 @@ subscriptions model =
         ]
 
 
-view : Model -> Html Msg
-view model =
-    div []
-        [ h1 []
-            [ text ("Pasteis " ++ (formatInt usLocale model.pasteis))
-            ]
-        , grid []
-            [ cell [ size All 12 ]
-                [ Button.render Mdl
-                    [ 0 ]
-                    model.mdl
-                    [ Button.raised
-                    , Button.ripple
-                    , Options.onClick CreatePastel
-                    , Options.disabled (model.manufacturingModule.dough < 1)
-                    ]
-                    [ text "Make a Pastel" ]
-                , text ""
-                , Button.render Mdl
-                    [ 1 ]
-                    model.mdl
-                    [ Button.minifab
-                    , Button.colored
-                    , Button.ripple
-                    , Options.onClick Reset
-                    ]
-                    [ Icon.i "delete" ]
-                ]
-            , cell [ size All 3 ]
-                [ Options.div
-                    [ css "display" "flex"
-                    , css "flex-flow" "row wrap"
-                    , css "align-items" "flex-end"
-                    , css "margin-top" "20px"
-                    ]
-                    [ Options.div
-                        [ css "display" "flex"
-                        , css "flex-flow" "row wrap"
-                        , css "justify-content" "space-between"
-                        , css "align-items" "center"
-                        , css "min-width" "256px"
-                        , css "flex" "1 1 auto"
-                        ]
-                        [ Business.view model
-                        , Manufacturing.view model
-                        ]
-                    ]
-                ]
-            , cell [ size All 3 ]
-                [ Options.div
-                    [ css "display" "flex"
-                    , css "flex-flow" "row wrap"
-                    , css "align-items" "flex-end"
-                    , css "margin-top" "20px"
-                    ]
-                    [ Options.div
-                        [ css "display" "flex"
-                        , css "flex-flow" "row wrap"
-                        , css "justify-content" "space-between"
-                        , css "align-items" "center"
-                        , css "min-width" "256px"
-                        , css "flex" "1 1 auto"
-                        ]
-                        [ Computing.view model
-                        ]
-                    ]
-                ]
-            , cell [ size All 3 ]
-                [ Options.div
-                    [ css "display" "flex"
-                    , css "flex-flow" "row wrap"
-                    , css "align-items" "flex-end"
-                    , css "margin-top" "20px"
-                    ]
-                    [ Options.div
-                        [ css "display" "flex"
-                        , css "flex-flow" "row wrap"
-                        , css "justify-content" "space-between"
-                        , css "align-items" "center"
-                        , css "min-width" "256px"
-                        , css "flex" "1 1 auto"
-                        ]
-                        []
-                    ]
-                ]
-            ]
-        ]
-        |> Material.Scheme.top
-
-
 updateModel : Model -> Model
 updateModel model =
     let
@@ -324,6 +229,11 @@ applyTime model time =
             |> \updatedModel ->
                 List.foldl step ( updatedModel, seed0 ) range
                     |> Tuple.first
+
+
+view : Model -> Html Msg
+view =
+    MainView.view
 
 
 applyTime_ : Model -> Simulations -> Model
