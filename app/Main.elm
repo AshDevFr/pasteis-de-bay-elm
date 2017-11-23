@@ -278,82 +278,69 @@ updateModel model =
             |> Computing.tryMakeComputingModule
 
 
+type alias Simulations =
+    { pasteisSimulation : Float
+    , doughCostSimulation : Float
+    }
+
+
 applyTime : Model -> Time -> Model
 applyTime model time =
-    case model.lastTick of
-        Nothing ->
+    let
+        setLastTick : Model -> Time -> Model
+        setLastTick model time =
+            { model | lastTick = Just time }
+
+        seed0 =
+            Random.initialSeed (floor (Time.inMilliseconds time))
+
+        operationsToRun =
+            model.lastTick
+                |> Maybe.andThen
+                    (\lastTick ->
+                        let
+                            elapsedTime =
+                                (Time.inMilliseconds time) - (Time.inMilliseconds lastTick)
+                        in
+                            Just <| Basics.max (floor (elapsedTime / 100)) 1
+                    )
+                |> Maybe.withDefault 1
+
+        step : Int -> ( Model, Random.Seed ) -> ( Model, Random.Seed )
+        step it ( model, seed ) =
             let
-                seed0 =
-                    Random.initialSeed (floor (Time.inMilliseconds time))
+                ( pasteisSimulation, seed1 ) =
+                    Utils.randomFloat 0 100 seed
 
-                ( float1, seed1 ) =
-                    Utils.randomFloat 0 100 seed0
-
-                ( float2, seed2 ) =
+                ( doughCostSimulation, seed2 ) =
                     Utils.randomFloat 0 100 seed1
             in
-                applyTime_ model ( [ float1 ], [ float2 ] ) |> flip setLastTick time
+                ( applyTime_ model (Simulations pasteisSimulation doughCostSimulation), seed2 )
 
-        Just lastTick ->
-            let
-                elapsedTime =
-                    (Time.inMilliseconds time) - (Time.inMilliseconds lastTick)
-
-                operationsToRun =
-                    Basics.min (Basics.max (floor (elapsedTime / 100)) 1) 600
-
-                seed0 =
-                    Random.initialSeed (floor (Time.inMilliseconds time))
-
-                ( floatList1, seed1 ) =
-                    Utils.randomMultipleFloat 0 100 operationsToRun seed0
-
-                ( floatList2, seed2 ) =
-                    Utils.randomMultipleFloat 0 100 operationsToRun seed1
-            in
-                applyTime_ model ( floatList1, floatList1 ) |> flip setLastTick time
+        range =
+            List.range 1 operationsToRun
+    in
+        setLastTick model time
+            |> \updatedModel ->
+                List.foldl step ( updatedModel, seed0 ) range
+                    |> Tuple.first
 
 
-applyTime_ : Model -> ( List Float, List Float ) -> Model
-applyTime_ model ( floatList, floatList2 ) =
-    case List.length floatList of
-        0 ->
-            model
-
-        _ ->
-            let
-                float1 =
-                    Maybe.withDefault 0 (List.head floatList)
-
-                float2 =
-                    Maybe.withDefault 0 (List.head floatList2)
-
-                floats1 =
-                    Maybe.withDefault [] (List.tail floatList)
-
-                floats2 =
-                    Maybe.withDefault [] (List.tail floatList2)
-            in
-                { model
-                    | businessModule = Business.sellPasteis model.businessModule float1
-                    , manufacturingModule = Manufacturing.adjustdoughCost model.manufacturingModule float2
-                }
-                    |> Manufacturing.makePasteis
-                    |> makeOperations
-                    |> updateModel
-                    |> flip applyTime_ ( floats1, floats2 )
+applyTime_ : Model -> Simulations -> Model
+applyTime_ model { pasteisSimulation, doughCostSimulation } =
+    { model
+        | businessModule = Business.sellPasteis model.businessModule pasteisSimulation
+        , manufacturingModule = Manufacturing.adjustdoughCost model.manufacturingModule doughCostSimulation
+    }
+        |> Manufacturing.makePasteis
+        |> makeOperations
+        |> updateModel
 
 
 makeOperations : Model -> Model
 makeOperations model =
-    case model.computingModule of
-        Nothing ->
-            model
-
-        Just mod ->
-            { model | computingModule = Just (Computing.makeOperations mod) }
-
-
-setLastTick : Model -> Time -> Model
-setLastTick model time =
-    { model | lastTick = Just time }
+    { model
+        | computingModule =
+            model.computingModule
+                |> Maybe.map Computing.makeOperations
+    }
