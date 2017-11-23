@@ -122,7 +122,7 @@ updateModel model =
         Just mod ->
             let
                 addTrust =
-                    model.pasteis > ((nextTrust mod.trust + 1) * 1000)
+                    model.pasteis >= ((nextTrust mod.trust + 1) * 1000)
             in
                 case addTrust of
                     False ->
