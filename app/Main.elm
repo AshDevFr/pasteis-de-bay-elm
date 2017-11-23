@@ -4,7 +4,7 @@ import Html exposing (..)
 import Material
 import Time exposing (Time, every, second, millisecond)
 import Random
-import Json.Decode as Decode exposing (decodeValue)
+import Json.Decode as Decode exposing (decodeValue, map)
 import Models exposing (..)
 import Utils exposing (..)
 import Business as Business
@@ -39,17 +39,12 @@ emptyModel =
 
 init : Maybe Decode.Value -> ( Model, Cmd Msg )
 init savedModel =
-    case savedModel of
-        Nothing ->
-            ( emptyModel, Cmd.none )
-
-        Just mod ->
-            case decodeValue decodeSaveModel mod of
-                Ok model ->
-                    ( updateModel (Utils.saveToModel model), Cmd.none )
-
-                Err err ->
-                    ( emptyModel, Cmd.none )
+    savedModel
+        |> Maybe.map (decodeValue (decodeSaveModel |> Decode.map Utils.saveToModel))
+        |> Maybe.map (Result.withDefault emptyModel)
+        |> Maybe.withDefault emptyModel
+        |> updateModel
+        |> flip (,) Cmd.none
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
