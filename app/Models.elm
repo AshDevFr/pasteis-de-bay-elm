@@ -1,5 +1,6 @@
 module Models exposing (..)
 
+import Business.Msg exposing (..)
 import Material
 import Time exposing (Time)
 
@@ -75,9 +76,7 @@ type Msg
     = Mdl (Material.Msg Msg)
     | CreatePastel
     | BuyDough
-    | BuyAds
-    | LowerPrice
-    | RaisePrice
+    | BusinessMessage Business.Msg.Msg
     | Tick Time
     | UpdateModel
     | BuyPasteis

@@ -65,28 +65,12 @@ update msg model =
                 , Cmd.none
                 )
 
-        LowerPrice ->
-            ( { model
-                | businessModule = Business.lowerPrice model.businessModule
-              }
-                |> updateModel
-            , Cmd.none
-            )
-
-        RaisePrice ->
-            ( { model
-                | businessModule = Business.raisePrice model.businessModule
-              }
-                |> updateModel
-            , Cmd.none
-            )
-
-        BuyAds ->
-            ( { model
-                | businessModule = Business.buyAds model.businessModule
-              }
-            , Cmd.none
-            )
+        BusinessMessage businessMessage ->
+            let
+                ( newBusinessModule, cmd ) =
+                    Business.update businessMessage model.businessModule
+            in
+                ( { model | businessModule = newBusinessModule }, Cmd.none )
 
         Tick newTime ->
             ( applyTime model newTime

@@ -1,4 +1,15 @@
-module Business exposing (..)
+module Business
+    exposing
+        ( init
+        , update
+        , view
+        , addItems
+        , addFunds
+        , removeFunds
+        , removeItems
+        , updateModel
+        , sellPasteis
+        )
 
 import Html exposing (Html, text)
 import Material.Card as Card
@@ -9,6 +20,7 @@ import Material.Color as Color
 import Material.Typography as Typography
 import Material.Grid exposing (grid, cell, size, Device(..), Align(..), align)
 import Models exposing (..)
+import Business.Msg as Business exposing (..)
 import Utils exposing (demandPercentage)
 import FormatNumber exposing (formatFloat, formatInt, usLocale)
 
@@ -26,7 +38,24 @@ init =
     }
 
 
-view : Model -> Html Msg
+update : Business.Msg -> BusinessModule -> ( BusinessModule, Cmd msg )
+update msg businessModule =
+    let
+        fn =
+            case msg of
+                LowerPrice ->
+                    lowerPrice
+
+                RaisePrice ->
+                    raisePrice
+
+                BuyAds ->
+                    buyAds
+    in
+        ( fn businessModule, Cmd.none )
+
+
+view : Model -> Html Models.Msg
 view model =
     let
         businessModule =
@@ -58,7 +87,7 @@ view model =
                             model.mdl
                             [ Button.colored
                             , Button.ripple
-                            , Options.onClick LowerPrice
+                            , Options.onClick (BusinessMessage Business.LowerPrice)
                             ]
                             [ text "Lower"
                             ]
@@ -67,7 +96,7 @@ view model =
                             model.mdl
                             [ Button.colored
                             , Button.ripple
-                            , Options.onClick RaisePrice
+                            , Options.onClick (BusinessMessage Business.RaisePrice)
                             ]
                             [ text "Raise"
                             ]
@@ -92,7 +121,7 @@ view model =
                             model.mdl
                             [ Button.colored
                             , Button.ripple
-                            , Options.onClick BuyAds
+                            , Options.onClick (BusinessMessage Business.BuyAds)
                             , Options.disabled (businessModule.funds < (toFloat businessModule.marketingCost))
                             ]
                             [ text "Marketing"
@@ -127,20 +156,6 @@ updateModel model =
         { model
             | demand = demand
         }
-
-
-lowerPrice : BusinessModule -> BusinessModule
-lowerPrice model =
-    { model
-        | price = (Basics.max (model.price - 0.01) 0.01)
-    }
-
-
-raisePrice : BusinessModule -> BusinessModule
-raisePrice model =
-    { model
-        | price = model.price + 0.01
-    }
 
 
 sellPasteis : BusinessModule -> Float -> BusinessModule
@@ -201,3 +216,17 @@ buyAds model =
             , marketingCost = model.marketingCost * 2
             , marketingLvl = model.marketingLvl + 1
         }
+
+
+lowerPrice : BusinessModule -> BusinessModule
+lowerPrice model =
+    { model
+        | price = (Basics.max (model.price - 0.01) 0.01)
+    }
+
+
+raisePrice : BusinessModule -> BusinessModule
+raisePrice model =
+    { model
+        | price = model.price + 0.01
+    }
