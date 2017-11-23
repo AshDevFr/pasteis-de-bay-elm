@@ -96,50 +96,50 @@ update msg model =
             )
 
         BuyPasteis ->
-            case model.manufacturingModule.pasteisModule of
-                Nothing ->
-                    ( model, Cmd.none )
-
-                Just mod ->
-                    { model
-                        | businessModule = Business.removeFunds model.businessModule mod.cost
-                        , manufacturingModule = Manufacturing.addPasteis model.manufacturingModule
-                    }
-                        |> flip (,) Cmd.none
+            model.manufacturingModule.pasteisModule
+                |> Maybe.map
+                    (\mod ->
+                        { model
+                            | businessModule = Business.removeFunds model.businessModule mod.cost
+                            , manufacturingModule = Manufacturing.addPasteis model.manufacturingModule
+                        }
+                    )
+                |> Maybe.withDefault model
+                |> flip (,) Cmd.none
 
         BuyMegaPasteis ->
-            case model.manufacturingModule.megaPasteisModule of
-                Nothing ->
-                    ( model, Cmd.none )
-
-                Just mod ->
-                    { model
-                        | businessModule = Business.removeFunds model.businessModule mod.cost
-                        , manufacturingModule = Manufacturing.addMegaPasteis model.manufacturingModule
-                    }
-                        |> flip (,) Cmd.none
+            model.manufacturingModule.megaPasteisModule
+                |> Maybe.map
+                    (\mod ->
+                        { model
+                            | businessModule = Business.removeFunds model.businessModule mod.cost
+                            , manufacturingModule = Manufacturing.addMegaPasteis model.manufacturingModule
+                        }
+                    )
+                |> Maybe.withDefault model
+                |> flip (,) Cmd.none
 
         AddProcessor ->
-            case model.computingModule of
-                Nothing ->
-                    ( model, Cmd.none )
-
-                Just computingModule ->
-                    { model
-                        | computingModule = Just (Computing.addProcessor computingModule)
-                    }
-                        |> flip (,) Cmd.none
+            model.computingModule
+                |> Maybe.map
+                    (\computingModule ->
+                        { model
+                            | computingModule = Just (Computing.addProcessor computingModule)
+                        }
+                    )
+                |> Maybe.withDefault model
+                |> flip (,) Cmd.none
 
         AddMemory ->
-            case model.computingModule of
-                Nothing ->
-                    ( model, Cmd.none )
-
-                Just computingModule ->
-                    { model
-                        | computingModule = Just (Computing.addMemory computingModule)
-                    }
-                        |> flip (,) Cmd.none
+            model.computingModule
+                |> Maybe.map
+                    (\computingModule ->
+                        { model
+                            | computingModule = Just (Computing.addMemory computingModule)
+                        }
+                    )
+                |> Maybe.withDefault model
+                |> flip (,) Cmd.none
 
         Reset ->
             ( emptyModel, Cmd.none )
