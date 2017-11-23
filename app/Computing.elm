@@ -48,7 +48,7 @@ view model =
                             [ size All 12
                             , align Middle
                             ]
-                            [ text ("Next trust " ++ (formatInt usLocale ((nextTrust mod.trust) * 1000)))
+                            [ text ("Next trust " ++ (formatInt usLocale ((nextTrust mod.trust + 1) * 1000)))
                             ]
                         , cell [ size All 6 ]
                             [ Button.render Mdl
@@ -122,7 +122,7 @@ updateModel model =
         Just mod ->
             let
                 addTrust =
-                    model.pasteis > ((nextTrust mod.trust) * 1000)
+                    model.pasteis > ((nextTrust mod.trust + 1) * 1000)
             in
                 case addTrust of
                     False ->
