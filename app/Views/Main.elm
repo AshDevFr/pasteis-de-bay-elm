@@ -31,14 +31,14 @@ view model =
                     , Options.disabled (model.manufacturingModule.dough < 1)
                     ]
                     [ text "Make a Pastel" ]
-                , text ""
                 , Button.render Mdl
                     [ 1 ]
                     model.mdl
-                    [ Button.minifab
+                    [ Button.icon
                     , Button.colored
                     , Button.ripple
                     , Options.onClick Reset
+                    , css "margin-left" "10px"
                     ]
                     [ Icon.i "delete" ]
                 ]
