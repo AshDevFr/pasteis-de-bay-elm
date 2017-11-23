@@ -162,7 +162,7 @@ addProcessor : ComputingModule -> ComputingModule
 addProcessor model =
     let
         availableTrust =
-            (model.trust - (model.processors + model.memory)) < 1
+            (model.trust - (model.processors + model.memory)) > 0
     in
         case availableTrust of
             False ->
@@ -178,7 +178,7 @@ addMemory : ComputingModule -> ComputingModule
 addMemory model =
     let
         availableTrust =
-            (model.trust - (model.processors + model.memory)) < 1
+            (model.trust - (model.processors + model.memory)) > 0
     in
         case availableTrust of
             False ->
