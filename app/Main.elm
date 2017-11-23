@@ -9,6 +9,7 @@ import Material.Options as Options exposing (css)
 import Material.Grid exposing (grid, cell, size, Device(..), Align(..), align)
 import Time exposing (Time, every, second, millisecond)
 import Random
+import Json.Decode as Decode exposing (decodeValue)
 import FormatNumber exposing (formatFloat, formatInt, usLocale)
 import Models exposing (..)
 import Utils exposing (..)
@@ -17,7 +18,7 @@ import Manufacturing as Manufacturing
 import Computing as Computing
 
 
-main : Program (Maybe SaveModel) Model Msg
+main : Program (Maybe Decode.Value) Model Msg
 main =
     programWithFlags
         { init = init
@@ -41,14 +42,19 @@ emptyModel =
     }
 
 
-init : Maybe SaveModel -> ( Model, Cmd Msg )
+init : Maybe Decode.Value -> ( Model, Cmd Msg )
 init savedModel =
     case savedModel of
         Nothing ->
             ( emptyModel, Cmd.none )
 
         Just mod ->
-            ( updateModel (Utils.saveToModel mod), Cmd.none )
+            case decodeValue decodeSaveModel mod of
+                Ok model ->
+                    ( updateModel (Utils.saveToModel model), Cmd.none )
+
+                Err err ->
+                    ( emptyModel, Cmd.none )
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
