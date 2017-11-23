@@ -3,6 +3,7 @@ module Models exposing (..)
 import Business.Msg exposing (..)
 import Manufacturing.Msg exposing (..)
 import Material
+import Dict exposing (Dict)
 import Time exposing (Time)
 
 
@@ -54,6 +55,30 @@ type alias ComputingModule =
     , operations : Float
     , creativityEnable : Bool
     , creativity : Float
+    }
+
+
+type alias RewardsModule =
+    { categories : Dict String RewardCategory
+    }
+
+
+type alias RewardCategory =
+    { activated : Bool
+    , rewards : List Reward
+    }
+
+
+type alias Reward =
+    { cost : RewardCost
+    , effect : Msg
+    }
+
+
+type alias RewardCost =
+    { funds : Int
+    , operations : Int
+    , creativity : Int
     }
 
 
