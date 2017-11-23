@@ -8,7 +8,7 @@ import Json.Decode as Decode exposing (decodeValue, map)
 import Models exposing (..)
 import Utils exposing (..)
 import Business as Business
-import Manufacturing as Manufacturing
+import Manufacturing as Manufacturing exposing (..)
 import Computing as Computing
 import Views.Main as MainView
 
@@ -50,9 +50,6 @@ init savedModel =
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        CreatePastel ->
-            ( Manufacturing.createPastel model, Cmd.none )
-
         BuyDough ->
             let
                 ( manufacturingModule, businessModule ) =
@@ -65,12 +62,19 @@ update msg model =
                 , Cmd.none
                 )
 
+        ManufacturingMessage manufacturingMessage ->
+            let
+                ( newManufacturingModule, cmd ) =
+                    Manufacturing.update manufacturingMessage model.manufacturingModule
+            in
+                ( { model | manufacturingModule = newManufacturingModule }, cmd )
+
         BusinessMessage businessMessage ->
             let
                 ( newBusinessModule, cmd ) =
                     Business.update businessMessage model.businessModule
             in
-                ( { model | businessModule = newBusinessModule }, Cmd.none )
+                ( { model | businessModule = newBusinessModule }, cmd )
 
         Tick newTime ->
             ( applyTime model newTime
@@ -133,6 +137,16 @@ update msg model =
 
         Mdl msg_ ->
             Material.update Mdl msg_ model
+
+        NewPasteisBaked cnt ->
+            let
+                newModel =
+                    { model
+                        | businessModule = Business.addItems model.businessModule cnt
+                        , pasteis = model.pasteis + cnt
+                    }
+            in
+                ( newModel, Cmd.none )
 
 
 subscriptions : Model -> Sub Msg

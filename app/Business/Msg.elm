@@ -1,4 +1,7 @@
-module Business.Msg exposing (..)
+module Business.Msg
+    exposing
+        ( Msg(..)
+        )
 
 
 type Msg

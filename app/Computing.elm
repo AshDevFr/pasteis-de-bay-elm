@@ -1,4 +1,13 @@
-module Computing exposing (..)
+module Computing
+    exposing
+        ( init
+        , view
+        , addProcessor
+        , addMemory
+        , updateModel
+        , tryMakeComputingModule
+        , makeOperations
+        )
 
 import Html exposing (Html, text)
 import Material.Card as Card

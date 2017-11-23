@@ -1,4 +1,15 @@
-module Manufacturing exposing (..)
+module Manufacturing
+    exposing
+        ( init
+        , update
+        , view
+        , buyDough
+        , addPasteis
+        , addMegaPasteis
+        , adjustdoughCost
+        , updateModel
+        , makePasteis
+        )
 
 import Html exposing (Html, text)
 import Material.Card as Card
@@ -10,6 +21,8 @@ import Material.Grid exposing (grid, cell, size, Device(..), Align(..), align)
 import Models exposing (..)
 import FormatNumber exposing (formatFloat, formatInt, usLocale)
 import Business as Business
+import Manufacturing.Msg as Manufacturing exposing (..)
+import Task exposing (..)
 
 
 init : ManufacturingModule
@@ -25,7 +38,7 @@ init =
     }
 
 
-view : Model -> Html Msg
+view : Model -> Html Models.Msg
 view model =
     let
         businessModule =
@@ -78,7 +91,7 @@ view model =
             ]
 
 
-pasteisView : Model -> Card.Block Msg
+pasteisView : Model -> Card.Block Models.Msg
 pasteisView model =
     let
         businessModule =
@@ -125,7 +138,7 @@ pasteisView model =
                     ]
 
 
-megaPasteisView : Model -> Card.Block Msg
+megaPasteisView : Model -> Card.Block Models.Msg
 megaPasteisView model =
     let
         businessModule =
@@ -279,26 +292,21 @@ adjustdoughCost model rand =
             }
 
 
-createPastel : Model -> Model
-createPastel model =
-    if (model.manufacturingModule.dough < 1) then
-        model
+update : Manufacturing.Msg -> ManufacturingModule -> ( ManufacturingModule, Cmd Models.Msg )
+update msg manufacturingModule =
+    case msg of
+        BakePastel availableDough ->
+            createPastel manufacturingModule availableDough
+
+
+createPastel : ManufacturingModule -> Int -> ( ManufacturingModule, Cmd Models.Msg )
+createPastel manufacturingModule availableDough =
+    if availableDough < 1 then
+        ( manufacturingModule, Cmd.none )
     else
-        let
-            businessModule =
-                Business.addItems model.businessModule 1
-
-            manufacturingModule =
-                model.manufacturingModule
-
-            newManufacturingModule =
-                { manufacturingModule | dough = manufacturingModule.dough - 1 }
-        in
-            { model
-                | pasteis = model.pasteis + 1
-                , businessModule = businessModule
-                , manufacturingModule = newManufacturingModule
-            }
+        ( { manufacturingModule | dough = manufacturingModule.dough - 1 }
+        , Task.perform Models.NewPasteisBaked (Task.succeed 1)
+        )
 
 
 makePasteis : Model -> Model

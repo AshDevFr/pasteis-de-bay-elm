@@ -8,12 +8,13 @@ import Models exposing (..)
 import Material.Options as Options exposing (css)
 import Material.Icon as Icon
 import Business as Business
-import Manufacturing as Manufacturing
+import Manufacturing exposing (..)
 import Computing as Computing
 import Material.Scheme
+import Manufacturing.Msg exposing (..)
 
 
-view : Model -> Html Msg
+view : Model -> Html Models.Msg
 view model =
     div []
         [ h1 []
@@ -26,7 +27,7 @@ view model =
                     model.mdl
                     [ Button.raised
                     , Button.ripple
-                    , Options.onClick CreatePastel
+                    , Options.onClick (ManufacturingMessage (Manufacturing.Msg.BakePastel 1))
                     , Options.disabled (model.manufacturingModule.dough < 1)
                     ]
                     [ text "Make a Pastel" ]

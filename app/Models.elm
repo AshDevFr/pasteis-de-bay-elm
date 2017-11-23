@@ -1,6 +1,7 @@
 module Models exposing (..)
 
 import Business.Msg exposing (..)
+import Manufacturing.Msg exposing (..)
 import Material
 import Time exposing (Time)
 
@@ -74,9 +75,9 @@ type alias Model =
 
 type Msg
     = Mdl (Material.Msg Msg)
-    | CreatePastel
     | BuyDough
     | BusinessMessage Business.Msg.Msg
+    | ManufacturingMessage Manufacturing.Msg.Msg
     | Tick Time
     | UpdateModel
     | BuyPasteis
@@ -84,3 +85,4 @@ type Msg
     | AddProcessor
     | AddMemory
     | Reset
+    | NewPasteisBaked Int
