@@ -34,6 +34,7 @@ type alias PasteisModule =
     { cost : Float
     , boost : Int
     , level : Int
+    , factor : Int
     }
 
 
@@ -41,6 +42,7 @@ type alias MegaPasteisModule =
     { cost : Float
     , boost : Int
     , level : Int
+    , factor : Int
     }
 
 

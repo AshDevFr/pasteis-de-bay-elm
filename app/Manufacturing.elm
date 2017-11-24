@@ -215,6 +215,7 @@ tryMakePasteisModule model funds =
                             { cost = 5
                             , boost = 1
                             , level = 0
+                            , factor = 1
                             }
 
 
@@ -243,6 +244,7 @@ tryMakeMegaPasteisModule model =
                                 { cost = 1000
                                 , boost = 1
                                 , level = 0
+                                , factor = 500
                                 }
 
 
@@ -375,18 +377,17 @@ makePasteis model =
                 }
 
 
-{-|
-   Use an extensible record to enable row polymorphism
+{-| Use an extensible record to enable row polymorphism
 -}
 type alias ProductionModule a =
-    { a | boost : Int, level : Int }
+    { a | boost : Int, level : Int, factor : Int }
 
 
 moduleProduction : Maybe (ProductionModule m) -> Float
 moduleProduction model =
     Maybe.map
         (\mod ->
-            (toFloat (mod.boost * mod.level)) / 10
+            (toFloat (mod.boost * mod.level * mod.factor)) / 10
         )
         model
         |> Maybe.withDefault 0.0
