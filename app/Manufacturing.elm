@@ -395,10 +395,6 @@ runMegaPasteis model =
             (toFloat (mod.boost * mod.level)) / 10
 
 
-
--- buyDough : ManufacturingModule -> BusinessModule -> ( ManufacturingModule, BusinessModule )
-
-
 buyDough : ManufacturingModule -> Float -> ( ManufacturingModule, Cmd Models.Msg )
 buyDough model funds =
     let
