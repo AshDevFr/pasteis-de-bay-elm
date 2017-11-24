@@ -341,10 +341,10 @@ makePasteis model =
         _ ->
             let
                 autoPasteisAmount =
-                    runPasteis model.manufacturingModule.pasteisModule
+                    moduleProduction model.manufacturingModule.pasteisModule
 
                 megaPasteisAmount =
-                    runMegaPasteis model.manufacturingModule.megaPasteisModule
+                    moduleProduction model.manufacturingModule.megaPasteisModule
 
                 partialPasteisCapacity =
                     model.manufacturingModule.partialPasteis + autoPasteisAmount + megaPasteisAmount
@@ -375,18 +375,15 @@ makePasteis model =
                 }
 
 
-runPasteis : Maybe PasteisModule -> Float
-runPasteis model =
-    Maybe.map
-        (\mod ->
-            (toFloat (mod.boost * mod.level)) / 10
-        )
-        model
-        |> Maybe.withDefault 0.0
+{-|
+   Use an extensible record to enable row polymorphism
+-}
+type alias ProductionModule a =
+    { a | boost : Int, level : Int }
 
 
-runMegaPasteis : Maybe MegaPasteisModule -> Float
-runMegaPasteis model =
+moduleProduction : Maybe (ProductionModule m) -> Float
+moduleProduction model =
     Maybe.map
         (\mod ->
             (toFloat (mod.boost * mod.level)) / 10
