@@ -377,22 +377,22 @@ makePasteis model =
 
 runPasteis : Maybe PasteisModule -> Float
 runPasteis model =
-    case model of
-        Nothing ->
-            0
-
-        Just mod ->
+    Maybe.map
+        (\mod ->
             (toFloat (mod.boost * mod.level)) / 10
+        )
+        model
+        |> Maybe.withDefault 0.0
 
 
 runMegaPasteis : Maybe MegaPasteisModule -> Float
 runMegaPasteis model =
-    case model of
-        Nothing ->
-            0
-
-        Just mod ->
+    Maybe.map
+        (\mod ->
             (toFloat (mod.boost * mod.level)) / 10
+        )
+        model
+        |> Maybe.withDefault 0.0
 
 
 buyDough : ManufacturingModule -> Float -> ( ManufacturingModule, Cmd Models.Msg )
