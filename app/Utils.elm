@@ -90,18 +90,20 @@ decodeManufacturingModule =
 
 decodePasteisModule : Decoder PasteisModule
 decodePasteisModule =
-    map3 PasteisModule
+    map4 PasteisModule
         (field "cost" float)
         (field "boost" int)
         (field "level" int)
+        (field "factor" int)
 
 
 decodeMegaPasteisModule : Decoder MegaPasteisModule
 decodeMegaPasteisModule =
-    map3 MegaPasteisModule
+    map4 MegaPasteisModule
         (field "cost" float)
         (field "boost" int)
         (field "level" int)
+        (field "factor" int)
 
 
 decodeComputingModule : Decoder ComputingModule
