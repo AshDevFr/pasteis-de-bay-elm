@@ -8,3 +8,4 @@ type Msg
     = LowerPrice
     | RaisePrice
     | BuyAds
+    | RemoveFunds Float

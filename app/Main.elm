@@ -8,9 +8,12 @@ import Json.Decode as Decode exposing (decodeValue, map)
 import Models exposing (..)
 import Utils exposing (..)
 import Business as Business
+import Business.Msg
 import Manufacturing as Manufacturing exposing (..)
+import Manufacturing.Msg
 import Computing as Computing
 import Views.Main as MainView
+import Task exposing (..)
 
 
 main : Program (Maybe Decode.Value) Model Msg
@@ -50,18 +53,6 @@ init savedModel =
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        BuyDough ->
-            let
-                ( manufacturingModule, businessModule ) =
-                    Manufacturing.buyDough model.manufacturingModule model.businessModule
-            in
-                ( { model
-                    | businessModule = businessModule
-                    , manufacturingModule = manufacturingModule
-                  }
-                , Cmd.none
-                )
-
         ManufacturingMessage manufacturingMessage ->
             let
                 ( newManufacturingModule, cmd ) =
@@ -87,25 +78,27 @@ update msg model =
             model.manufacturingModule.pasteisModule
                 |> Maybe.map
                     (\mod ->
-                        { model
-                            | businessModule = Business.removeFunds model.businessModule mod.cost
-                            , manufacturingModule = Manufacturing.addPasteis model.manufacturingModule
-                        }
+                        ( model
+                        , Cmd.batch
+                            [ Task.perform BusinessMessage <| Task.succeed (Business.Msg.RemoveFunds mod.cost)
+                            , Task.perform ManufacturingMessage <| Task.succeed (Manufacturing.Msg.AddPasteis)
+                            ]
+                        )
                     )
-                |> Maybe.withDefault model
-                |> flip (,) Cmd.none
+                |> Maybe.withDefault ( model, Cmd.none )
 
         BuyMegaPasteis ->
             model.manufacturingModule.megaPasteisModule
                 |> Maybe.map
                     (\mod ->
-                        { model
-                            | businessModule = Business.removeFunds model.businessModule mod.cost
-                            , manufacturingModule = Manufacturing.addMegaPasteis model.manufacturingModule
-                        }
+                        ( model
+                        , Cmd.batch
+                            [ Task.perform BusinessMessage <| Task.succeed (Business.Msg.RemoveFunds mod.cost)
+                            , Task.perform ManufacturingMessage <| Task.succeed (Manufacturing.Msg.AddMegaPasteis)
+                            ]
+                        )
                     )
-                |> Maybe.withDefault model
-                |> flip (,) Cmd.none
+                |> Maybe.withDefault ( model, Cmd.none )
 
         AddProcessor ->
             model.computingModule
@@ -147,6 +140,11 @@ update msg model =
                     }
             in
                 ( newModel, Cmd.none )
+
+        DoughtBought cost ->
+            ( model
+            , Task.perform BusinessMessage <| Task.succeed (Business.Msg.RemoveFunds cost)
+            )
 
 
 subscriptions : Model -> Sub Msg

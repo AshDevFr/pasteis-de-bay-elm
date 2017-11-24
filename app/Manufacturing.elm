@@ -4,8 +4,6 @@ module Manufacturing
         , update
         , view
         , buyDough
-        , addPasteis
-        , addMegaPasteis
         , adjustdoughCost
         , updateModel
         , makePasteis
@@ -66,7 +64,7 @@ view model =
                             model.mdl
                             [ Button.colored
                             , Button.ripple
-                            , Options.onClick BuyDough
+                            , Options.onClick (ManufacturingMessage (Manufacturing.BuyDough businessModule.funds))
                             , Options.disabled (businessModule.funds < (toFloat manufacturingModule.doughCost))
                             ]
                             [ text "Dough"
@@ -292,11 +290,24 @@ adjustdoughCost model rand =
             }
 
 
+noEffects =
+    flip (,) Cmd.none
+
+
 update : Manufacturing.Msg -> ManufacturingModule -> ( ManufacturingModule, Cmd Models.Msg )
 update msg manufacturingModule =
     case msg of
         BakePastel availableDough ->
             createPastel manufacturingModule availableDough
+
+        BuyDough funds ->
+            buyDough manufacturingModule funds
+
+        AddPasteis ->
+            addPasteis manufacturingModule |> noEffects
+
+        AddMegaPasteis ->
+            addMegaPasteis manufacturingModule |> noEffects
 
 
 createPastel : ManufacturingModule -> Int -> ( ManufacturingModule, Cmd Models.Msg )
@@ -384,23 +395,22 @@ runMegaPasteis model =
             (toFloat (mod.boost * mod.level)) / 10
 
 
-buyDough : ManufacturingModule -> BusinessModule -> ( ManufacturingModule, BusinessModule )
-buyDough model business =
+
+-- buyDough : ManufacturingModule -> BusinessModule -> ( ManufacturingModule, BusinessModule )
+
+
+buyDough : ManufacturingModule -> Float -> ( ManufacturingModule, Cmd Models.Msg )
+buyDough model funds =
     let
-        doughCost =
+        cost =
             toFloat model.doughCost
     in
-        if (business.funds < doughCost) then
-            ( model, business )
+        if (funds < cost) then
+            ( model, Cmd.none )
         else
-            let
-                businessModule =
-                    Business.removeFunds business doughCost
-
-                manufacturingModule =
-                    { model
-                        | doughBasePrice = model.doughBasePrice + 0.05
-                        , dough = model.dough + model.doughSupply
-                    }
-            in
-                ( manufacturingModule, businessModule )
+            ( { model
+                | doughBasePrice = model.doughBasePrice + 0.05
+                , dough = model.dough + model.doughSupply
+              }
+            , Task.perform Models.DoughtBought (Task.succeed cost)
+            )

@@ -51,6 +51,9 @@ update msg businessModule =
 
                 BuyAds ->
                     buyAds
+
+                RemoveFunds funds ->
+                    flip removeFunds funds
     in
         ( fn businessModule, Cmd.none )
 
@@ -186,9 +189,9 @@ addFunds model income =
 
 
 removeFunds : BusinessModule -> Float -> BusinessModule
-removeFunds model outcome =
+removeFunds model funds =
     { model
-        | funds = model.funds - outcome
+        | funds = model.funds - funds
     }
 
 

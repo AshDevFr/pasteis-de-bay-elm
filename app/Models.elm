@@ -75,7 +75,6 @@ type alias Model =
 
 type Msg
     = Mdl (Material.Msg Msg)
-    | BuyDough
     | BusinessMessage Business.Msg.Msg
     | ManufacturingMessage Manufacturing.Msg.Msg
     | Tick Time
@@ -86,3 +85,4 @@ type Msg
     | AddMemory
     | Reset
     | NewPasteisBaked Int
+    | DoughtBought Float

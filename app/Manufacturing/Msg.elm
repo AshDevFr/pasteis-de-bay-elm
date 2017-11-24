@@ -6,3 +6,7 @@ module Manufacturing.Msg
 
 type Msg
     = BakePastel Int
+    | BuyDough Float
+    | AddPasteis
+    | AddMegaPasteis
+    | MakePasteis

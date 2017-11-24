@@ -8,10 +8,11 @@ import Models exposing (..)
 import Material.Options as Options exposing (css)
 import Material.Icon as Icon
 import Business as Business
+import Business.Msg exposing (..)
 import Manufacturing exposing (..)
+import Manufacturing.Msg exposing (..)
 import Computing as Computing
 import Material.Scheme
-import Manufacturing.Msg exposing (..)
 
 
 view : Model -> Html Models.Msg
