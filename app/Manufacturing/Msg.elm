@@ -9,4 +9,3 @@ type Msg
     | BuyDough Float
     | AddPasteis
     | AddMegaPasteis
-    | MakePasteis
