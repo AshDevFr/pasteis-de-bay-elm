@@ -13,10 +13,10 @@ import Business.Msg
 import Manufacturing as Manufacturing exposing (..)
 import Manufacturing.Msg
 import Projects as Projects exposing (..)
-import Projects.Msg
 import Computing as Computing
 import Views.Main as MainView
 import Task exposing (..)
+import Dict
 
 
 main : Program (Maybe Decode.Value) Model Msg
@@ -161,6 +161,34 @@ update msg model =
             ( model
             , Task.perform BusinessMessage <| Task.succeed (Business.Msg.RemoveFunds cost)
             )
+
+        MapOperations _ ->
+            ( model, Cmd.none )
+
+        MapPasteisBoost _ ->
+            ( model, Cmd.none )
+
+        MapPasteisLevel _ ->
+            ( model, Cmd.none )
+
+        MapWire _ ->
+            ( model, Cmd.none )
+
+        MapTrust _ ->
+            ( model, Cmd.none )
+
+        ActivateProject project ->
+            let
+                dict =
+                    model.projectsModule
+                        |> Maybe.map (\p -> Dict.insert project.id True p.projectsActivated)
+                        |> Maybe.withDefault Dict.empty
+
+                newModule =
+                    model.projectsModule
+                        |> Maybe.map (\pm -> { pm | projectsActivated = dict })
+            in
+                ( { model | projectsModule = newModule }, Cmd.none )
 
 
 subscriptions : Model -> Sub Msg

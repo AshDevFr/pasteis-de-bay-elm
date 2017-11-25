@@ -7,6 +7,7 @@ module Computing
         , updateModel
         , tryMakeComputingModule
         , makeOperations
+        , mapOperations
         )
 
 import Html exposing (Html, text)
@@ -216,6 +217,26 @@ makeOperations model =
                         Basics.min (model.operations + newOps) (toFloat model.memoryLimit)
                 in
                     { model | operations = operations }
+
+
+mapOperations : ComputingModule -> (Float -> Float) -> ComputingModule
+mapOperations model fn =
+    let
+        newVal =
+            fn model.operations
+
+        tooHigh =
+            newVal >= (toFloat model.memoryLimit)
+
+        tooLow =
+            newVal < 0.0
+    in
+        case tooHigh || tooLow of
+            True ->
+                model
+
+            False ->
+                { model | operations = newVal }
 
 
 creativitySpeed : Float -> Float

@@ -34,7 +34,7 @@ type alias ManufacturingModule =
 
 type alias PasteisModule =
     { cost : Float
-    , boost : Int
+    , boost : Float
     , level : Int
     , factor : Int
     }
@@ -42,7 +42,7 @@ type alias PasteisModule =
 
 type alias MegaPasteisModule =
     { cost : Float
-    , boost : Int
+    , boost : Float
     , level : Int
     , factor : Int
     }
@@ -59,30 +59,11 @@ type alias ComputingModule =
 
 
 type alias ProjectsModule =
-    { projectsActivated : Dict String Bool
-    , projects : List Project
-    }
+    { projectsActivated : Dict String Bool }
 
 
 type alias ProjectsModuleSave =
     { projectsActivated : List ( String, Bool )
-    }
-
-
-type alias Project =
-    { id : String
-    , name : String
-    , description : String
-    , cost : ProjectCost
-    , trigger : Bool
-    , effect : Msg
-    }
-
-
-type alias ProjectCost =
-    { funds : Int
-    , operations : Int
-    , creativity : Int
     }
 
 
@@ -120,3 +101,27 @@ type Msg
     | Reset
     | NewPasteisBaked Int
     | DoughtBought Float
+    | MapOperations (Float -> Float)
+    | MapPasteisBoost (Float -> Float)
+    | MapPasteisLevel (Int -> Int)
+    | MapTrust (Int -> Int)
+    | MapWire (Int -> Int)
+    | ActivateProject Project
+
+
+type alias Project =
+    { id : String
+    , name : String
+    , description : String
+    , trigger : Model -> Bool
+    , cost : ProjectCost
+    , effect : List Msg
+    }
+
+
+type alias ProjectCost =
+    { funds : Int
+    , operations : Int
+    , creativity : Int
+    , trust : Int
+    }

@@ -381,16 +381,16 @@ makePasteis model =
 {-| Use an extensible record to enable row polymorphism
 -}
 type alias ProductionModule a =
-    { a | boost : Int, level : Int, factor : Int }
+    { a | boost : Float, level : Int, factor : Int }
 
 
 moduleProduction : Maybe (ProductionModule m) -> Float
 moduleProduction model =
-    Maybe.map
-        (\mod ->
-            (toFloat (mod.boost * mod.level * mod.factor)) / 10
-        )
-        model
+    model
+        |> Maybe.map
+            (\mod ->
+                0.1 * mod.boost * (toFloat <| mod.level * mod.factor)
+            )
         |> Maybe.withDefault 0.0
 
 

@@ -57,26 +57,13 @@ modelToSave model =
 
 
 projectModuleToSave : Maybe ProjectsModule -> Maybe ProjectsModuleSave
-projectModuleToSave projectsModule =
-    case projectsModule of
-        Nothing ->
-            Nothing
-
-        Just mod ->
-            Just { projectsActivated = toList mod.projectsActivated }
+projectModuleToSave =
+    Maybe.map (\mod -> { projectsActivated = toList mod.projectsActivated })
 
 
 saveToProjectModule : Maybe ProjectsModuleSave -> Maybe ProjectsModule
-saveToProjectModule saveModel =
-    case saveModel of
-        Nothing ->
-            Nothing
-
-        Just mod ->
-            Just
-                { projectsActivated = fromList mod.projectsActivated
-                , projects = Projects.initList
-                }
+saveToProjectModule =
+    Maybe.map (\mod -> { projectsActivated = fromList mod.projectsActivated })
 
 
 decodeSaveModel : Decoder SaveModel
@@ -119,7 +106,7 @@ decodePasteisModule : Decoder PasteisModule
 decodePasteisModule =
     map4 PasteisModule
         (field "cost" float)
-        (field "boost" int)
+        (field "boost" float)
         (field "level" int)
         (field "factor" int)
 
@@ -128,7 +115,7 @@ decodeMegaPasteisModule : Decoder MegaPasteisModule
 decodeMegaPasteisModule =
     map4 MegaPasteisModule
         (field "cost" float)
-        (field "boost" int)
+        (field "boost" float)
         (field "level" int)
         (field "factor" int)
 
