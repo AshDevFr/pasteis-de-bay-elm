@@ -292,6 +292,7 @@ adjustdoughCost model rand =
             }
 
 
+noEffects : a -> ( a, Cmd msg )
 noEffects =
     flip (,) Cmd.none
 

@@ -1,19 +1,30 @@
 sudo: false
 
-cache:
-  directories:
-    - test/elm-stuff/build-artifacts
-
 language: node_js
 
+cache:
+  directories:
+    - elm-stuff/packages
+    - tests/elm-stuff/build-artifacts
+    - tests/elm-stuff/packages
+    - libsysconfcpus
+
 node_js:
-  - "8.8"
+  - "node"
 
 install:
-  - npm install -g elm@0.18 elm-test@0.18
+  - npm install -g elm@0.18.0 elm-test
   - npm install --ignore-scripts
+  - |
+    if [ ! -d libsysconfcpus/bin ];
+    then
+      git clone https://github.com/obmarg/libsysconfcpus.git;
+      cd libsysconfcpus;
+      ./configure --prefix=$TRAVIS_BUILD_DIR/libsysconfcpus;
+      make && make install;
+      cd ..;
+    fi
+  - elm package install --yes
 
 script:
-  - elm package install -y
-  - npm run lint
-  - elm make app/Main.elm
+  - libsysconfcpus/bin/sysconfcpus -n 2 make
