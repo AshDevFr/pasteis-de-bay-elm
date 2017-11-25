@@ -49,52 +49,43 @@ view model =
                 , div
                     []
                     [ div []
-                        [ div
-                            []
-                            [ text ("Next trust " ++ (formatInt usLocale ((nextTrust mod.trust + 1) * 1000)))
-                            ]
-                        , div []
-                            [ button
-                                [ onClick AddProcessor
-                                , disabled ((mod.trust - (mod.processors + mod.memory)) < 1)
-                                ]
-                                [ text "Processors"
-                                ]
-                            ]
-                        , div
-                            []
-                            [ text (" " ++ (formatInt usLocale mod.processors))
-                            ]
-                        , div []
-                            [ button
-                                [ onClick AddMemory
-                                , disabled ((mod.trust - (mod.processors + mod.memory)) < 1)
-                                ]
-                                [ text "Memory"
-                                ]
-                            ]
-                        , div
-                            []
-                            [ text (" " ++ (formatInt usLocale mod.memory))
-                            ]
+                        [ text ("Next trust " ++ (formatInt usLocale ((nextTrust mod.trust + 1) * 1000)))
                         ]
                     ]
                 , div
-                    []
+                    [ style [ ( "margin-top", "10px" ) ] ]
                     [ div []
-                        [ div
-                            []
-                            [ text
-                                ("Operations : "
-                                    ++ (formatInt usLocale (floor mod.operations))
-                                    ++ " / "
-                                    ++ (formatInt usLocale mod.memoryLimit)
-                                )
+                        [ button
+                            [ onClick AddProcessor
+                            , disabled ((mod.trust - (mod.processors + mod.memory)) < 1)
                             ]
-                        , div
-                            []
-                            [ text ("Creativity : " ++ (formatInt usLocale (floor (mod.creativity |> Maybe.withDefault 0.0))))
+                            [ text "Processors"
                             ]
+                        , text (" " ++ (formatInt usLocale mod.processors))
+                        ]
+                    , div []
+                        [ button
+                            [ onClick AddMemory
+                            , disabled ((mod.trust - (mod.processors + mod.memory)) < 1)
+                            ]
+                            [ text "Memory"
+                            ]
+                        , text (" " ++ (formatInt usLocale mod.memory))
+                        ]
+                    ]
+                , div
+                    [ style [ ( "margin-top", "10px" ) ] ]
+                    [ div []
+                        [ text
+                            ("Operations : "
+                                ++ (formatInt usLocale (floor mod.operations))
+                                ++ " / "
+                                ++ (formatInt usLocale mod.memoryLimit)
+                            )
+                        ]
+                    , div
+                        []
+                        [ text ("Creativity : " ++ (formatInt usLocale (floor (mod.creativity |> Maybe.withDefault 0.0))))
                         ]
                     ]
                 ]

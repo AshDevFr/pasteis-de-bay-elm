@@ -6,10 +6,10 @@ import Html.Events exposing (onClick)
 import Html.Attributes exposing (style, disabled)
 import Models exposing (..)
 import Business as Business
+import Projects as Projects
 import Manufacturing exposing (..)
 import Manufacturing.Msg exposing (..)
 import Computing as Computing
-import Projects as Projects
 
 
 header : Int -> Html msg
@@ -39,80 +39,28 @@ makePasteisView model =
 
 businessAndMaufacturingView : Model -> Html Models.Msg
 businessAndMaufacturingView model =
-    div []
-        [ div
-            [ style
-                [ ( "display", "flex" )
-                , ( "flex-flow", "row wrap" )
-                , ( "align-items", "flex-end" )
-                , ( "margin-top", "20px" )
-                ]
-            ]
-            [ div
-                [ style
-                    [ ( "display", "flex" )
-                    , ( "flex-flow", "row wrap" )
-                    , ( "justify-content", "space-between" )
-                    , ( "align-items", "center" )
-                    , ( "min-width", "256px" )
-                    , ( "flex", "1 1 auto" )
-                    ]
-                ]
-                [ Business.view model
-                , Manufacturing.view model
-                ]
-            ]
+    div [ style [ ( "float", "left" ) ] ]
+        [ Business.view model
+        , Manufacturing.view model
         ]
 
 
 computingView : Model -> Html Models.Msg
 computingView model =
-    div []
-        [ div
-            [ style
-                [ ( "display", "flex" )
-                , ( "flex-flow", "row wrap" )
-                , ( "align-items", "flex-end" )
-                , ( "margin-top", "20px" )
-                ]
+    div
+        [ style
+            [ ( "float", "left" )
+            , ( "margin", "30px" )
             ]
-            [ div
-                [ style
-                    [ ( "display", "flex" )
-                    , ( "flex-flow", "row wrap" )
-                    , ( "justify-content", "space-between" )
-                    , ( "align-items", "center" )
-                    , ( "min-width", "256px" )
-                    , ( "flex", "1 1 auto" )
-                    ]
-                ]
-                [ Computing.view model
-                ]
-            ]
+        ]
+        [ Computing.view model
         ]
 
 
 projectsView : Model -> Html Models.Msg
 projectsView model =
-    div
-        [ style
-            [ ( "display", "flex" )
-            , ( "flex-flow", "row wrap" )
-            , ( "align-items", "flex-end" )
-            , ( "margin-top", "20px" )
-            ]
-        ]
-        [ div
-            [ style
-                [ ( "display", "flex" )
-                , ( "flex-flow", "row wrap" )
-                , ( "justify-content", "space-between" )
-                , ( "align-items", "center" )
-                , ( "min-width", "256px" )
-                , ( "flex", "1 1 auto" )
-                ]
-            ]
-            []
+    div []
+        [ Projects.view model
         ]
 
 
