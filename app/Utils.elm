@@ -1,7 +1,7 @@
 module Utils exposing (..)
 
 import Random
-import FormatNumber exposing (formatFloat, formatInt, usLocale)
+import FormatNumber exposing (formatFloat, usLocale)
 import Models exposing (..)
 
 

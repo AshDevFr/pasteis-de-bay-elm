@@ -27,8 +27,7 @@ init =
     , memory = 1
     , memoryLimit = 1000
     , operations = 0
-    , creativityEnable = False
-    , creativity = 0
+    , creativity = Nothing
     }
 
 
@@ -114,7 +113,7 @@ view model =
                             [ size All 12
                             , align Middle
                             ]
-                            [ text ("Creativity : " ++ (formatInt usLocale (floor mod.creativity)))
+                            [ text ("Creativity : " ++ (formatInt usLocale (floor (mod.creativity |> Maybe.withDefault 0.0))))
                             ]
                         ]
                     ]
@@ -219,24 +218,20 @@ makeOperations model =
                     { model | operations = operations }
 
 
+creativitySpeed : Float -> Float
+creativitySpeed processorsCount =
+    (logBase 10 processorsCount)
+        * (processorsCount ^ 1.1)
+        + (processorsCount - 1)
+        |> flip (/) 400
+
+
 makeCreativity : ComputingModule -> ComputingModule
 makeCreativity model =
-    case model.creativityEnable of
-        False ->
-            model
-
-        True ->
-            let
-                creativitySpeed =
-                    ((logBase 10 (toFloat model.processors)) * ((toFloat model.processors) ^ 1.1)) + toFloat (model.processors - 1)
-
-                newCreativity =
-                    creativitySpeed / 400
-
-                creativity =
-                    model.creativity + newCreativity
-            in
-                { model | creativity = creativity }
+    model.creativity
+        |> Maybe.map ((+) (creativitySpeed (model.processors |> toFloat)))
+        |> Maybe.map (\newCreativity -> { model | creativity = Just newCreativity })
+        |> Maybe.withDefault model
 
 
 nextTrust : Int -> Int

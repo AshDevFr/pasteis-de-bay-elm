@@ -13,6 +13,7 @@ import Json.Decode
         ( Decoder
         , map8
         , map7
+        , map6
         , map5
         , map4
         , map3
@@ -134,14 +135,13 @@ decodeMegaPasteisModule =
 
 decodeComputingModule : Decoder ComputingModule
 decodeComputingModule =
-    map7 ComputingModule
+    map6 ComputingModule
         (field "trust" int)
         (field "processors" int)
         (field "memory" int)
         (field "memoryLimit" int)
         (field "operations" float)
-        (field "creativityEnable" bool)
-        (field "creativity" float)
+        (maybe (field "creativityEnable" float))
 
 
 decodeProjectsModule : Decoder ProjectsModuleSave
