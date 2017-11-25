@@ -58,24 +58,28 @@ type alias ComputingModule =
     }
 
 
-type alias RewardsModule =
-    { categories : Dict String RewardCategory
+type alias ProjectsModule =
+    { projectsActivated : Dict String Bool
+    , projects : List Project
     }
 
 
-type alias RewardCategory =
-    { activated : Bool
-    , rewards : List Reward
+type alias ProjectsModuleSave =
+    { projectsActivated : List ( String, Bool )
     }
 
 
-type alias Reward =
-    { cost : RewardCost
+type alias Project =
+    { id : String
+    , name : String
+    , description : String
+    , cost : ProjectCost
+    , trigger : Bool
     , effect : Msg
     }
 
 
-type alias RewardCost =
+type alias ProjectCost =
     { funds : Int
     , operations : Int
     , creativity : Int
@@ -87,6 +91,7 @@ type alias SaveModel =
     , businessModule : BusinessModule
     , manufacturingModule : ManufacturingModule
     , computingModule : Maybe ComputingModule
+    , projectsModule : Maybe ProjectsModuleSave
     }
 
 
@@ -97,6 +102,7 @@ type alias Model =
     , businessModule : BusinessModule
     , manufacturingModule : ManufacturingModule
     , computingModule : Maybe ComputingModule
+    , projectsModule : Maybe ProjectsModule
     }
 
 

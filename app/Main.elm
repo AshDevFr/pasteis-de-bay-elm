@@ -7,6 +7,7 @@ import Random
 import Json.Decode as Decode exposing (decodeValue, map)
 import Models exposing (..)
 import Utils exposing (..)
+import Validator exposing (decodeSaveModel, saveToModel, modelToSave)
 import Business as Business
 import Business.Msg
 import Manufacturing as Manufacturing exposing (..)
@@ -37,13 +38,14 @@ emptyModel =
     , businessModule = Business.init
     , manufacturingModule = Manufacturing.init
     , computingModule = Nothing
+    , projectsModule = Nothing
     }
 
 
 init : Maybe Decode.Value -> ( Model, Cmd Msg )
 init savedModel =
     savedModel
-        |> Maybe.map (decodeValue (decodeSaveModel |> Decode.map Utils.saveToModel))
+        |> Maybe.map (decodeValue (decodeSaveModel |> Decode.map saveToModel))
         |> Maybe.map (Result.withDefault emptyModel)
         |> Maybe.withDefault emptyModel
         |> updateModel
@@ -70,7 +72,7 @@ update msg model =
         Tick newTime ->
             ( applyTime model newTime
             , Cmd.batch
-                [ saveState (Utils.modelToSave model)
+                [ saveState (modelToSave model)
                 ]
             )
 
