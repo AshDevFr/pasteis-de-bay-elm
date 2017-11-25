@@ -13,3 +13,4 @@ utilsTests =
                 equal (demandPercentage 42.4242) "424.24"
         ]
     ]
+        |> describe "Test Suite"

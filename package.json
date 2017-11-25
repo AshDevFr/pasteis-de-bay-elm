@@ -20,5 +20,6 @@
   "homepage": "https://github.com/AshDevFr/pasteis-de-bay-elm#readme",
   "devDependencies": {
     "node-elm-lint": "^1.0.0-beta.1"
-  }
+  },
+  "dependencies": {}
 }
