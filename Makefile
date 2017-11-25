@@ -1,8 +1,8 @@
 all: test
-	elm-make app/Main.elm --output build/app.js --warn
+	./node_modules/.bin/elm-make app/Main.elm --output build/app.js --warn
 
 get-deps:
-	elm package install
+	./node_modules/.bin/elm package install
 
 test:
-	elm-test
+	./node_modules/.bin/elm-test
