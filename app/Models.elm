@@ -2,6 +2,7 @@ module Models exposing (..)
 
 import Business.Msg exposing (..)
 import Manufacturing.Msg exposing (..)
+import Projects.Msg exposing (..)
 import Material
 import Dict exposing (Dict)
 import Time exposing (Time)
@@ -110,6 +111,7 @@ type Msg
     = Mdl (Material.Msg Msg)
     | BusinessMessage Business.Msg.Msg
     | ManufacturingMessage Manufacturing.Msg.Msg
+    | ProjectsMessage Projects.Msg.Msg
     | Tick Time
     | UpdateModel
     | BuyPasteis

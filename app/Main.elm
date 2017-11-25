@@ -12,6 +12,8 @@ import Business as Business
 import Business.Msg
 import Manufacturing as Manufacturing exposing (..)
 import Manufacturing.Msg
+import Projects as Projects exposing (..)
+import Projects.Msg
 import Computing as Computing
 import Views.Main as MainView
 import Task exposing (..)
@@ -68,6 +70,18 @@ update msg model =
                     Business.update businessMessage model.businessModule
             in
                 ( { model | businessModule = newBusinessModule }, cmd )
+
+        ProjectsMessage projectsMessage ->
+            case model.projectsModule of
+                Nothing ->
+                    ( model, Cmd.none )
+
+                Just mod ->
+                    let
+                        ( newProjectsModule, cmd ) =
+                            Projects.update projectsMessage mod
+                    in
+                        ( { model | projectsModule = Just newProjectsModule }, cmd )
 
         Tick newTime ->
             ( applyTime model newTime

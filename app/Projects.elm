@@ -2,6 +2,7 @@ module Projects
     exposing
         ( init
         , initList
+        , update
         , view
         )
 
@@ -21,6 +22,11 @@ init =
 initList : List Project
 initList =
     []
+
+
+update : Projects.Msg -> ProjectsModule -> ( ProjectsModule, Cmd msg )
+update msg projectsModule =
+    ( projectsModule, Cmd.none )
 
 
 view : Model -> Html Models.Msg
