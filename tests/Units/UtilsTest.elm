@@ -1,4 +1,4 @@
-module Unit.UtilsTest exposing (utilsTests)
+module Units.UtilsTest exposing (utilsTests)
 
 import Test exposing (describe, test)
 import Expect exposing (equal)
