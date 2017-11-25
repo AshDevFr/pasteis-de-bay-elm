@@ -2,13 +2,19 @@ version: 2
 jobs:
   build:
     docker:
-      - image: circleci/node:8.8
+      - image: ashdev/circleci-elm
 
     working_directory: ~/repo
 
     steps:
-      - run: yarn install
-      - run: ./node_modules/.bin/elm package install
+      - checkout
 
-      - run: ./node_modules/.bin/elm-make app/Main.elm --output build/app.js --warn
-      - run: ./node_modules/.bin/elm-test
+      - run:
+          name: Install dependencies
+          command: 'yarn install --ignore-scripts'
+
+      - run:
+          name: Install Elm dependencies
+          command: 'elm package install -y'
+
+      - run: make
