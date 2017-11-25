@@ -8,5 +8,7 @@ jobs:
 
     steps:
       - run: yarn install
+      - run: ./node_modules/.bin/elm package install
 
-      - run: make
+      - run: ./node_modules/.bin/elm-make app/Main.elm --output build/app.js --warn
+      - run: ./node_modules/.bin/elm-test
