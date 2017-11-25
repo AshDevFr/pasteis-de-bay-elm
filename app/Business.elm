@@ -11,14 +11,9 @@ module Business
         , sellPasteis
         )
 
-import Html exposing (Html, text)
-import Material.Card as Card
-import Material.Button as Button
-import Material.Options as Options exposing (css)
-import Material.Elevation as Elevation
-import Material.Color as Color
-import Material.Typography as Typography
-import Material.Grid exposing (grid, cell, size, Device(..), Align(..), align)
+import Html exposing (Html, div, span, button, text, h2, h3)
+import Html.Events exposing (onClick)
+import Html.Attributes exposing (style, disabled)
 import Models exposing (..)
 import Business.Msg as Business exposing (..)
 import Utils exposing (demandPercentage)
@@ -64,42 +59,31 @@ view model =
         businessModule =
             model.businessModule
     in
-        Card.view
-            [ Elevation.e2
-            , css "margin" "4px 8px"
-            , css "width" "100%"
+        div
+            [ style
+                [ ( "margin", "4px 8px" )
+                , ( "width", "100%" )
+                ]
             ]
-            [ Card.title
-                [ css "flex-direction" "column" ]
-                [ Card.head [] [ text "Business" ]
-                , Card.subhead [] [ text ("Available Funds: $ " ++ (formatFloat usLocale businessModule.funds)) ]
+            [ div
+                [ style [ ( "flex-direction", "column" ) ] ]
+                [ h2 [] [ text "Business" ]
+                , h3 [] [ text ("Available Funds: $ " ++ (formatFloat usLocale businessModule.funds)) ]
                 ]
-            , Card.text
-                [ Color.text Color.black
-                , Typography.subhead
-                ]
+            , div
+                []
                 [ text ("Unsold Inventory: " ++ (formatInt usLocale businessModule.inventory)) ]
-            , Card.actions [ Color.text Color.black ]
-                [ grid []
-                    [ cell
-                        [ size All 12
-                        , align Middle
-                        ]
-                        [ Button.render Mdl
-                            [ 1, 1 ]
-                            model.mdl
-                            [ Button.colored
-                            , Button.ripple
-                            , Options.onClick (BusinessMessage Business.LowerPrice)
+            , div []
+                [ div []
+                    [ div
+                        []
+                        [ button
+                            [ onClick (BusinessMessage Business.LowerPrice)
                             ]
                             [ text "Lower"
                             ]
-                        , Button.render Mdl
-                            [ 1, 2 ]
-                            model.mdl
-                            [ Button.colored
-                            , Button.ripple
-                            , Options.onClick (BusinessMessage Business.RaisePrice)
+                        , button
+                            [ onClick (BusinessMessage Business.RaisePrice)
                             ]
                             [ text "Raise"
                             ]
@@ -108,39 +92,26 @@ view model =
                                 ++ (formatFloat usLocale businessModule.price)
                             )
                         ]
-                    , cell
-                        [ size All 12
-                        , align Top
-                        ]
-                        [ Options.span [] [ text ("Public demand: " ++ (demandPercentage businessModule.demand) ++ "%") ]
+                    , div
+                        []
+                        [ span [] [ text ("Public demand: " ++ (demandPercentage businessModule.demand) ++ "%") ]
                         ]
                     ]
                 ]
-            , Card.actions [ Color.text Color.black ]
-                [ grid []
-                    [ cell [ size All 6 ]
-                        [ Button.render Mdl
-                            [ 1, 3 ]
-                            model.mdl
-                            [ Button.colored
-                            , Button.ripple
-                            , Options.onClick (BusinessMessage Business.BuyAds)
-                            , Options.disabled (businessModule.funds < (toFloat businessModule.marketingCost))
+            , div [ style [ ( "margin-top", "10px" ) ] ]
+                [ div []
+                    [ div []
+                        [ button
+                            [ onClick (BusinessMessage Business.BuyAds)
+                            , disabled (businessModule.funds < (toFloat businessModule.marketingCost))
                             ]
                             [ text "Marketing"
                             ]
+                        , text (" Level: " ++ (toString businessModule.marketingLvl))
                         ]
-                    , cell
-                        [ size All 6
-                        , align Middle
-                        ]
-                        [ text (" Level: " ++ (toString businessModule.marketingLvl))
-                        ]
-                    , cell
-                        [ size All 12
-                        , align Top
-                        ]
-                        [ Options.span [] [ text ("Cost: $ " ++ (formatInt usLocale businessModule.marketingCost)) ]
+                    , div
+                        []
+                        [ span [] [ text ("Cost: $ " ++ (formatInt usLocale businessModule.marketingCost)) ]
                         ]
                     ]
                 ]

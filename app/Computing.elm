@@ -10,13 +10,9 @@ module Computing
         , mapOperations
         )
 
-import Html exposing (Html, text)
-import Material.Card as Card
-import Material.Button as Button
-import Material.Options as Options exposing (css)
-import Material.Elevation as Elevation
-import Material.Color as Color
-import Material.Grid exposing (grid, cell, size, Device(..), Align(..), align)
+import Html exposing (Html, div, span, button, text, h2, h3)
+import Html.Events exposing (onClick)
+import Html.Attributes exposing (style, disabled)
 import Models exposing (..)
 import FormatNumber exposing (formatFloat, formatInt, usLocale)
 
@@ -39,70 +35,55 @@ view model =
             text ""
 
         Just mod ->
-            Card.view
-                [ Elevation.e2
-                , css "margin" "4px 8px"
-                , css "width" "100%"
-                ]
-                [ Card.title
-                    [ css "flex-direction" "column" ]
-                    [ Card.head [] [ text "Research" ]
-                    , Card.subhead [] [ text ("Trust : " ++ (formatInt usLocale mod.trust)) ]
+            div
+                [ style
+                    [ ( "margin", "4px 8px" )
+                    , ( "width", "100%" )
                     ]
-                , Card.actions
-                    [ Color.text Color.black ]
-                    [ grid []
-                        [ cell
-                            [ size All 12
-                            , align Middle
-                            ]
+                ]
+                [ div
+                    [ style [ ( "flex-direction", "column" ) ] ]
+                    [ h2 [] [ text "Research" ]
+                    , h3 [] [ text ("Trust : " ++ (formatInt usLocale mod.trust)) ]
+                    ]
+                , div
+                    []
+                    [ div []
+                        [ div
+                            []
                             [ text ("Next trust " ++ (formatInt usLocale ((nextTrust mod.trust + 1) * 1000)))
                             ]
-                        , cell [ size All 6 ]
-                            [ Button.render Mdl
-                                [ 3, 1 ]
-                                model.mdl
-                                [ Button.colored
-                                , Button.ripple
-                                , Options.onClick AddProcessor
-                                , Options.disabled ((mod.trust - (mod.processors + mod.memory)) < 1)
+                        , div []
+                            [ button
+                                [ onClick AddProcessor
+                                , disabled ((mod.trust - (mod.processors + mod.memory)) < 1)
                                 ]
                                 [ text "Processors"
                                 ]
                             ]
-                        , cell
-                            [ size All 6
-                            , align Middle
-                            ]
+                        , div
+                            []
                             [ text (" " ++ (formatInt usLocale mod.processors))
                             ]
-                        , cell [ size All 6 ]
-                            [ Button.render Mdl
-                                [ 3, 2 ]
-                                model.mdl
-                                [ Button.colored
-                                , Button.ripple
-                                , Options.onClick AddMemory
-                                , Options.disabled ((mod.trust - (mod.processors + mod.memory)) < 1)
+                        , div []
+                            [ button
+                                [ onClick AddMemory
+                                , disabled ((mod.trust - (mod.processors + mod.memory)) < 1)
                                 ]
                                 [ text "Memory"
                                 ]
                             ]
-                        , cell
-                            [ size All 6
-                            , align Middle
-                            ]
+                        , div
+                            []
                             [ text (" " ++ (formatInt usLocale mod.memory))
                             ]
                         ]
                     ]
-                , Card.actions
-                    [ Color.text Color.black ]
-                    [ grid []
-                        [ cell
-                            [ size All 12
-                            , align Middle
-                            ]
+                , div
+                    []
+                    [ div []
+                        [ div
+                            []
                             [ text
                                 ("Operations : "
                                     ++ (formatInt usLocale (floor mod.operations))
@@ -110,10 +91,8 @@ view model =
                                     ++ (formatInt usLocale mod.memoryLimit)
                                 )
                             ]
-                        , cell
-                            [ size All 12
-                            , align Middle
-                            ]
+                        , div
+                            []
                             [ text ("Creativity : " ++ (formatInt usLocale (floor (mod.creativity |> Maybe.withDefault 0.0))))
                             ]
                         ]

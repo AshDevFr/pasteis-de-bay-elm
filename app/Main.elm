@@ -1,7 +1,6 @@
 port module Main exposing (..)
 
 import Html exposing (..)
-import Material
 import Time exposing (Time, every, second, millisecond)
 import Random
 import Json.Decode as Decode exposing (decodeValue, map)
@@ -34,8 +33,7 @@ port saveState : SaveModel -> Cmd msg
 
 emptyModel : Model
 emptyModel =
-    { mdl = Material.model
-    , lastTick = Nothing
+    { lastTick = Nothing
     , pasteis = 0
     , businessModule = Business.init
     , manufacturingModule = Manufacturing.init
@@ -143,9 +141,6 @@ update msg model =
 
         UpdateModel ->
             ( updateModel model, Cmd.none )
-
-        Mdl msg_ ->
-            Material.update Mdl msg_ model
 
         NewPasteisBaked cnt ->
             let

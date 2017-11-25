@@ -1,18 +1,15 @@
 module Views.Main exposing (view)
 
 import FormatNumber exposing (formatFloat, formatInt, usLocale)
-import Html exposing (..)
-import Material.Button as Button
-import Material.Grid exposing (Cell, grid, cell, size, Device(..), Align(..), align)
+import Html exposing (Html, div, button, text, h1)
+import Html.Events exposing (onClick)
+import Html.Attributes exposing (style, disabled)
 import Models exposing (..)
-import Material.Options as Options exposing (css)
-import Material.Icon as Icon
 import Business as Business
 import Manufacturing exposing (..)
 import Manufacturing.Msg exposing (..)
 import Computing as Computing
-import Material.Scheme
-import Projects.View as Projects exposing (view)
+import Projects as Projects
 
 
 header : Int -> Html msg
@@ -22,47 +19,44 @@ header pasteis =
         ]
 
 
-makePasteisView : Model -> Cell Models.Msg
+makePasteisView : Model -> Html Models.Msg
 makePasteisView model =
-    cell [ size All 12 ]
-        [ Button.render Mdl
-            [ 0 ]
-            model.mdl
-            [ Button.raised
-            , Button.ripple
-            , Options.onClick (ManufacturingMessage (Manufacturing.Msg.BakePastel 1))
-            , Options.disabled (model.manufacturingModule.dough < 1)
+    div []
+        [ div []
+            [ button
+                [ onClick (ManufacturingMessage (Manufacturing.Msg.BakePastel 1))
+                , disabled (model.manufacturingModule.dough < 1)
+                ]
+                [ text "Make a Pastel" ]
+            , button
+                [ onClick Reset
+                , style [ ( "margin-left", "10px" ) ]
+                ]
+                [ text "Reset" ]
             ]
-            [ text "Make a Pastel" ]
-        , Button.render Mdl
-            [ 1 ]
-            model.mdl
-            [ Button.icon
-            , Button.colored
-            , Button.ripple
-            , Options.onClick Reset
-            , css "margin-left" "10px"
-            ]
-            [ Icon.i "delete" ]
         ]
 
 
-businessAndMaufacturingView : Model -> Cell Models.Msg
+businessAndMaufacturingView : Model -> Html Models.Msg
 businessAndMaufacturingView model =
-    cell [ size All 3 ]
-        [ Options.div
-            [ css "display" "flex"
-            , css "flex-flow" "row wrap"
-            , css "align-items" "flex-end"
-            , css "margin-top" "20px"
+    div []
+        [ div
+            [ style
+                [ ( "display", "flex" )
+                , ( "flex-flow", "row wrap" )
+                , ( "align-items", "flex-end" )
+                , ( "margin-top", "20px" )
+                ]
             ]
-            [ Options.div
-                [ css "display" "flex"
-                , css "flex-flow" "row wrap"
-                , css "justify-content" "space-between"
-                , css "align-items" "center"
-                , css "min-width" "256px"
-                , css "flex" "1 1 auto"
+            [ div
+                [ style
+                    [ ( "display", "flex" )
+                    , ( "flex-flow", "row wrap" )
+                    , ( "justify-content", "space-between" )
+                    , ( "align-items", "center" )
+                    , ( "min-width", "256px" )
+                    , ( "flex", "1 1 auto" )
+                    ]
                 ]
                 [ Business.view model
                 , Manufacturing.view model
@@ -71,22 +65,26 @@ businessAndMaufacturingView model =
         ]
 
 
-computingView : Model -> Cell Models.Msg
+computingView : Model -> Html Models.Msg
 computingView model =
-    cell [ size All 3 ]
-        [ Options.div
-            [ css "display" "flex"
-            , css "flex-flow" "row wrap"
-            , css "align-items" "flex-end"
-            , css "margin-top" "20px"
+    div []
+        [ div
+            [ style
+                [ ( "display", "flex" )
+                , ( "flex-flow", "row wrap" )
+                , ( "align-items", "flex-end" )
+                , ( "margin-top", "20px" )
+                ]
             ]
-            [ Options.div
-                [ css "display" "flex"
-                , css "flex-flow" "row wrap"
-                , css "justify-content" "space-between"
-                , css "align-items" "center"
-                , css "min-width" "256px"
-                , css "flex" "1 1 auto"
+            [ div
+                [ style
+                    [ ( "display", "flex" )
+                    , ( "flex-flow", "row wrap" )
+                    , ( "justify-content", "space-between" )
+                    , ( "align-items", "center" )
+                    , ( "min-width", "256px" )
+                    , ( "flex", "1 1 auto" )
+                    ]
                 ]
                 [ Computing.view model
                 ]
@@ -94,25 +92,27 @@ computingView model =
         ]
 
 
-projectsView : Model -> Cell Models.Msg
+projectsView : Model -> Html Models.Msg
 projectsView model =
-    cell [ size All 3 ]
-        [ Options.div
-            [ css "display" "flex"
-            , css "flex-flow" "row wrap"
-            , css "align-items" "flex-end"
-            , css "margin-top" "20px"
+    div
+        [ style
+            [ ( "display", "flex" )
+            , ( "flex-flow", "row wrap" )
+            , ( "align-items", "flex-end" )
+            , ( "margin-top", "20px" )
             ]
-            [ Options.div
-                [ css "display" "flex"
-                , css "flex-flow" "row wrap"
-                , css "justify-content" "space-between"
-                , css "align-items" "center"
-                , css "min-width" "256px"
-                , css "flex" "1 1 auto"
+        ]
+        [ div
+            [ style
+                [ ( "display", "flex" )
+                , ( "flex-flow", "row wrap" )
+                , ( "justify-content", "space-between" )
+                , ( "align-items", "center" )
+                , ( "min-width", "256px" )
+                , ( "flex", "1 1 auto" )
                 ]
-                [ Projects.view model ]
             ]
+            []
         ]
 
 
@@ -120,12 +120,10 @@ view : Model -> Html Models.Msg
 view model =
     div []
         [ header model.pasteis
-        , grid
-            []
+        , div []
             [ makePasteisView model
             , businessAndMaufacturingView model
             , computingView model
             , projectsView model
             ]
         ]
-        |> Material.Scheme.top
