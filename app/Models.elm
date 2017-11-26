@@ -3,7 +3,6 @@ module Models exposing (..)
 import Business.Msg exposing (..)
 import Manufacturing.Msg exposing (..)
 import Projects.Msg exposing (..)
-import Material
 import Dict exposing (Dict)
 import Time exposing (Time)
 
@@ -77,8 +76,7 @@ type alias SaveModel =
 
 
 type alias Model =
-    { mdl : Material.Model
-    , lastTick : Maybe Time
+    { lastTick : Maybe Time
     , pasteis : Int
     , businessModule : BusinessModule
     , manufacturingModule : ManufacturingModule
@@ -88,8 +86,7 @@ type alias Model =
 
 
 type Msg
-    = Mdl (Material.Msg Msg)
-    | BusinessMessage Business.Msg.Msg
+    = BusinessMessage Business.Msg.Msg
     | ManufacturingMessage Manufacturing.Msg.Msg
     | ProjectsMessage Projects.Msg.Msg
     | Tick Time

@@ -9,13 +9,9 @@ module Manufacturing
         , makePasteis
         )
 
-import Html exposing (Html, text)
-import Material.Card as Card
-import Material.Button as Button
-import Material.Options as Options exposing (css)
-import Material.Elevation as Elevation
-import Material.Color as Color
-import Material.Grid exposing (grid, cell, size, Device(..), Align(..), align)
+import Html exposing (Html, div, span, button, text, h2, h3)
+import Html.Events exposing (onClick)
+import Html.Attributes exposing (style, disabled)
 import Models exposing (..)
 import FormatNumber exposing (formatFloat, formatInt, usLocale)
 import Business as Business
@@ -45,41 +41,31 @@ view model =
         manufacturingModule =
             model.manufacturingModule
     in
-        Card.view
-            [ Elevation.e2
-            , css "margin" "4px 8px"
-            , css "width" "100%"
-            ]
-            [ Card.title
-                [ css "flex-direction" "column" ]
-                [ Card.head [] [ text "Manufacturing" ]
-                , Card.subhead [] [ text ("Pasteis per Second: " ++ (manufacturingModule.pasteisMakerRate |> round |> toString)) ]
+        div
+            [ style
+                [ ( "margin", "4px 8px" )
+                , ( "width", "100%" )
                 ]
-            , Card.actions
-                [ Color.text Color.black ]
-                [ grid []
-                    [ cell [ size All 6 ]
-                        [ Button.render Mdl
-                            [ 2, 1 ]
-                            model.mdl
-                            [ Button.colored
-                            , Button.ripple
-                            , Options.onClick (ManufacturingMessage (Manufacturing.BuyDough businessModule.funds))
-                            , Options.disabled (businessModule.funds < (toFloat manufacturingModule.doughCost))
+            ]
+            [ div
+                [ style [ ( "flex-direction", "column" ) ] ]
+                [ h2 [] [ text "Manufacturing" ]
+                , h3 [] [ text ("Pasteis per Second: " ++ (manufacturingModule.pasteisMakerRate |> round |> toString)) ]
+                ]
+            , div
+                []
+                [ div []
+                    [ div []
+                        [ button
+                            [ onClick (ManufacturingMessage (Manufacturing.BuyDough businessModule.funds))
+                            , disabled (businessModule.funds < (toFloat manufacturingModule.doughCost))
                             ]
                             [ text "Dough"
                             ]
+                        , text (" " ++ (formatInt usLocale manufacturingModule.dough) ++ " coins")
                         ]
-                    , cell
-                        [ size All 6
-                        , align Middle
-                        ]
-                        [ text (" " ++ (formatInt usLocale manufacturingModule.dough) ++ " coins")
-                        ]
-                    , cell
-                        [ size All 12
-                        , align Top
-                        ]
+                    , div
+                        []
                         [ text ("Cost: $ " ++ (toString manufacturingModule.doughCost))
                         ]
                     ]
@@ -89,7 +75,7 @@ view model =
             ]
 
 
-pasteisView : Model -> Card.Block Models.Msg
+pasteisView : Model -> Html Models.Msg
 pasteisView model =
     let
         businessModule =
@@ -100,43 +86,30 @@ pasteisView model =
     in
         case manufacturingModule.pasteisModule of
             Nothing ->
-                Card.actions [ Color.text Color.black ] [ text "" ]
+                div [] [ text "" ]
 
             Just mod ->
-                Card.actions
-                    [ Color.text Color.black
-                    , Card.border
-                    ]
-                    [ grid []
-                        [ cell [ size All 6 ]
-                            [ Button.render Mdl
-                                [ 2, 2 ]
-                                model.mdl
-                                [ Button.colored
-                                , Button.ripple
-                                , Options.onClick BuyPasteis
-                                , Options.disabled (businessModule.funds < mod.cost)
+                div
+                    [ style [ ( "margin-top", "10px" ) ] ]
+                    [ div []
+                        [ div []
+                            [ button
+                                [ onClick BuyPasteis
+                                , disabled (businessModule.funds < mod.cost)
                                 ]
                                 [ text "AutoPasteis"
                                 ]
+                            , text (" " ++ (toString mod.level))
                             ]
-                        , cell
-                            [ size All 6
-                            , align Middle
-                            ]
-                            [ text (" " ++ (toString mod.level))
-                            ]
-                        , cell
-                            [ size All 12
-                            , align Top
-                            ]
-                            [ Options.span [] [ text ("Cost: $ " ++ (formatFloat usLocale mod.cost)) ]
+                        , div
+                            []
+                            [ span [] [ text ("Cost: $ " ++ (formatFloat usLocale mod.cost)) ]
                             ]
                         ]
                     ]
 
 
-megaPasteisView : Model -> Card.Block Models.Msg
+megaPasteisView : Model -> Html Models.Msg
 megaPasteisView model =
     let
         businessModule =
@@ -147,37 +120,24 @@ megaPasteisView model =
     in
         case manufacturingModule.megaPasteisModule of
             Nothing ->
-                Card.actions [ Color.text Color.black ] [ text "" ]
+                div [] [ text "" ]
 
             Just mod ->
-                Card.actions
-                    [ Color.text Color.black
-                    , Card.border
-                    ]
-                    [ grid []
-                        [ cell [ size All 6 ]
-                            [ Button.render Mdl
-                                [ 2, 3 ]
-                                model.mdl
-                                [ Button.colored
-                                , Button.ripple
-                                , Options.onClick BuyMegaPasteis
-                                , Options.disabled (businessModule.funds < mod.cost)
+                div
+                    [ style [ ( "margin-top", "10px" ) ] ]
+                    [ div []
+                        [ div []
+                            [ button
+                                [ onClick BuyMegaPasteis
+                                , disabled (businessModule.funds < mod.cost)
                                 ]
                                 [ text "MegaPasteis"
                                 ]
+                            , text (" " ++ (toString mod.level))
                             ]
-                        , cell
-                            [ size All 6
-                            , align Middle
-                            ]
-                            [ text (" " ++ (toString mod.level))
-                            ]
-                        , cell
-                            [ size All 12
-                            , align Top
-                            ]
-                            [ Options.span [] [ text ("Cost: $ " ++ (formatFloat usLocale mod.cost)) ]
+                        , div
+                            []
+                            [ span [] [ text ("Cost: $ " ++ (formatFloat usLocale mod.cost)) ]
                             ]
                         ]
                     ]

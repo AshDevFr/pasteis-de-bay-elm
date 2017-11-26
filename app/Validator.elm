@@ -6,7 +6,7 @@ module Validator
         )
 
 import Dict exposing (toList, fromList)
-import Material
+import Projects as Projects
 import Json.Decode
     exposing
         ( Decoder
@@ -34,9 +34,7 @@ import Models exposing (..)
 
 saveToModel : SaveModel -> Model
 saveToModel saveModel =
-    { mdl =
-        Material.model
-    , lastTick = Nothing
+    { lastTick = Nothing
     , pasteis = saveModel.pasteis
     , businessModule = saveModel.businessModule
     , manufacturingModule = saveModel.manufacturingModule
