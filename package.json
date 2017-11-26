@@ -4,7 +4,7 @@
   "description": "",
   "scripts": {
     "postinstall": "npm run make",
-    "make": "elm-make app/Main.elm --output=build/elm.js",
+    "make": "elm-make app/Main.elm --output=build/app.js",
     "start": "npm run make && http-server",
     "lint": "./node_modules/.bin/elm-lint"
   },
