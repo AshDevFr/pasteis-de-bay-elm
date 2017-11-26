@@ -1,8 +1,6 @@
-module Projects
+module Projects.Update
     exposing
-        ( init
-        , initList
-        , update
+        ( update
         )
 
 import Html exposing (Html, text)

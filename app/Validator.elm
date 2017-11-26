@@ -7,7 +7,6 @@ module Validator
 
 import Dict exposing (toList, fromList)
 import Material
-import Projects as Projects
 import Json.Decode
     exposing
         ( Decoder

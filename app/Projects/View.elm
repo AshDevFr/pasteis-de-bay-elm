@@ -13,7 +13,7 @@ import Material.Elevation as Elevation
 import Material.Color as Color
 import Material.Grid exposing (Cell, grid, cell, size, Device(..), Align(..), align)
 import FormatNumber exposing (formatFloat, formatInt, usLocale)
-import Projects exposing (initList)
+import Projects.Init exposing (initList)
 
 
 projectView : Int -> Model -> Project -> Cell Models.Msg
@@ -51,6 +51,6 @@ view model =
                 , Card.actions
                     [ Color.text Color.black ]
                     [ grid []
-                        (List.indexedMap (flip projectView model) Projects.initList)
+                        (List.indexedMap (flip projectView model) initList)
                     ]
                 ]

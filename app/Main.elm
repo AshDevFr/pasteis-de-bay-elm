@@ -12,11 +12,11 @@ import Business as Business
 import Business.Msg
 import Manufacturing as Manufacturing exposing (..)
 import Manufacturing.Msg
-import Projects as Projects exposing (..)
 import Computing as Computing
 import Views.Main as MainView
 import Task exposing (..)
 import Dict
+import Projects.Update as Projects
 
 
 main : Program (Maybe Decode.Value) Model Msg
