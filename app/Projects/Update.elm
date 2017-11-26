@@ -5,9 +5,10 @@ module Projects.Update
 
 import Html exposing (Html, text)
 import Dict as Dict
-import Models exposing (Model, ProjectsModule, Project)
 import Projects.Msg as Projects exposing (..)
 import Projects.Data exposing (allProjects)
+import Projects.Model exposing (Project)
+import Projects.Module.ProjectsModule exposing (ProjectsModule)
 
 
 init : ProjectsModule

@@ -6,7 +6,12 @@ module Validator
         )
 
 import Dict exposing (toList, fromList)
-import Projects as Projects
+import Projects.Model as Projects
+import Projects.Module.ProjectsModule exposing (ProjectsModule, ProjectsModuleSave)
+import Business.Model exposing (BusinessModule)
+import Manufacturing.Model exposing (ManufacturingModule, PasteisModule, MegaPasteisModule)
+import Computing.Model exposing (ComputingModule)
+import Main.Model exposing (SaveModel, Model)
 import Json.Decode
     exposing
         ( Decoder
@@ -29,7 +34,6 @@ import Json.Decode
         , string
         , index
         )
-import Models exposing (..)
 
 
 saveToModel : SaveModel -> Model

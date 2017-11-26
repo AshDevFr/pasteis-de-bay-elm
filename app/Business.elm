@@ -14,8 +14,10 @@ module Business
 import Html exposing (Html, div, span, button, text, h2, h3)
 import Html.Events exposing (onClick)
 import Html.Attributes exposing (style, disabled)
-import Models exposing (..)
 import Business.Msg as Business exposing (..)
+import Business.Model as Business exposing (..)
+import Main.Msg exposing (Msg(..))
+import Main.Model exposing (Model, SaveModel)
 import Utils exposing (demandPercentage)
 import FormatNumber exposing (formatFloat, formatInt, usLocale)
 
@@ -53,7 +55,7 @@ update msg businessModule =
         ( fn businessModule, Cmd.none )
 
 
-view : Model -> Html Models.Msg
+view : Model -> Html Main.Msg.Msg
 view model =
     let
         businessModule =

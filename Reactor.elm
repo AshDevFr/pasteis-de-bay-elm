@@ -1,7 +1,8 @@
 module Reactor exposing (..)
 
 import Main as Main
-import Models exposing (..)
+import Main.Msg exposing (..)
+import Main.Model exposing (..)
 import Html
 
 

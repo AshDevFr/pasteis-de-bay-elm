@@ -2,7 +2,9 @@ module Utils exposing (..)
 
 import Random
 import FormatNumber exposing (formatFloat, usLocale)
-import Models exposing (..)
+
+
+-- import Models exposing (..)
 
 
 demandPercentage : Float -> String

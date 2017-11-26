@@ -13,8 +13,10 @@ module Computing
 import Html exposing (Html, div, span, button, text, h2, h3)
 import Html.Events exposing (onClick)
 import Html.Attributes exposing (style, disabled)
-import Models exposing (..)
 import FormatNumber exposing (formatFloat, formatInt, usLocale)
+import Computing.Model exposing (ComputingModule)
+import Main.Model exposing (Model)
+import Main.Msg exposing (Msg(..))
 
 
 init : ComputingModule
@@ -119,21 +121,20 @@ updateModel model =
 
 tryMakeComputingModule : Model -> Model
 tryMakeComputingModule model =
-    case model.computingModule of
-        Just mod ->
-            model
-
-        Nothing ->
-            let
+    model.computingModule
+        |> Maybe.map (\mod -> model)
+        |> Maybe.withDefault
+            (let
                 enoughPasteis =
                     model.pasteis >= 2000
-            in
+             in
                 case enoughPasteis of
                     False ->
                         model
 
                     True ->
                         { model | computingModule = Just init }
+            )
 
 
 addProcessor : ComputingModule -> ComputingModule

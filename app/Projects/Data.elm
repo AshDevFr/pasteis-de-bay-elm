@@ -3,13 +3,9 @@ module Projects.Data
         ( allProjects
         )
 
-import Models
-    exposing
-        ( Project
-        , ProjectCost
-        , Model
-        , Msg(..)
-        )
+import Projects.Model exposing (Project, ProjectCost)
+import Projects.Msg exposing (Msg(..))
+import Main.Model exposing (Model)
 
 
 allProjects : List Project
@@ -36,7 +32,7 @@ improvedAutoClippers =
         , MapPasteisBoost (flip (+) 0.25)
         , MapPasteisLevel (always 1)
         ]
-    , cost = Models.ProjectCost 0 750 0 0
+    , cost = ProjectCost 0 750 0 0
     }
 
 
@@ -54,5 +50,5 @@ begForMoreWire =
         , MapWire (always 1)
         ]
     , cost =
-        Models.ProjectCost 0 750 0 100
+        ProjectCost 0 750 0 100
     }

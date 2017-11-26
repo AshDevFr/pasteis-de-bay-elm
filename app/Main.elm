@@ -4,7 +4,6 @@ import Html exposing (..)
 import Time exposing (Time, every, second, millisecond)
 import Random
 import Json.Decode as Decode exposing (decodeValue, map)
-import Models exposing (..)
 import Utils exposing (..)
 import Validator exposing (decodeSaveModel, saveToModel, modelToSave)
 import Business as Business
@@ -16,6 +15,9 @@ import Views.Main as MainView
 import Task exposing (..)
 import Dict
 import Projects.Update as Projects
+import Main.Msg exposing (..)
+import Main.Model exposing (..)
+import Projects.Init as Projects exposing (tryMakeProjectsModule)
 
 
 main : Program (Maybe Decode.Value) Model Msg
@@ -157,21 +159,6 @@ update msg model =
             , Task.perform BusinessMessage <| Task.succeed (Business.Msg.RemoveFunds cost)
             )
 
-        MapOperations _ ->
-            ( model, Cmd.none )
-
-        MapPasteisBoost _ ->
-            ( model, Cmd.none )
-
-        MapPasteisLevel _ ->
-            ( model, Cmd.none )
-
-        MapWire _ ->
-            ( model, Cmd.none )
-
-        MapTrust _ ->
-            ( model, Cmd.none )
-
         ActivateProject project ->
             let
                 dict =
@@ -210,6 +197,7 @@ updateModel model =
             , manufacturingModule = manufacturingModule
             , computingModule = computingModule
         }
+            |> Projects.tryMakeProjectsModule
             |> Computing.tryMakeComputingModule
 
 

@@ -12,10 +12,13 @@ module Manufacturing
 import Html exposing (Html, div, span, button, text, h2, h3)
 import Html.Events exposing (onClick)
 import Html.Attributes exposing (style, disabled)
-import Models exposing (..)
 import FormatNumber exposing (formatFloat, formatInt, usLocale)
 import Business as Business
+import Main.Msg exposing (Msg(..))
 import Manufacturing.Msg as Manufacturing exposing (..)
+import Business.Model exposing (BusinessModule)
+import Manufacturing.Model exposing (ManufacturingModule, PasteisModule, MegaPasteisModule)
+import Main.Model exposing (SaveModel, Model)
 import Task exposing (..)
 
 
@@ -32,7 +35,7 @@ init =
     }
 
 
-view : Model -> Html Models.Msg
+view : Model -> Html Main.Msg.Msg
 view model =
     let
         businessModule =
@@ -75,7 +78,7 @@ view model =
             ]
 
 
-pasteisView : Model -> Html Models.Msg
+pasteisView : Model -> Html Main.Msg.Msg
 pasteisView model =
     let
         businessModule =
@@ -109,7 +112,7 @@ pasteisView model =
                     ]
 
 
-megaPasteisView : Model -> Html Models.Msg
+megaPasteisView : Model -> Html Main.Msg.Msg
 megaPasteisView model =
     let
         businessModule =
@@ -257,7 +260,7 @@ noEffects =
     flip (,) Cmd.none
 
 
-update : Manufacturing.Msg -> ManufacturingModule -> ( ManufacturingModule, Cmd Models.Msg )
+update : Manufacturing.Msg -> ManufacturingModule -> ( ManufacturingModule, Cmd Main.Msg.Msg )
 update msg manufacturingModule =
     case msg of
         BakePastel availableDough ->
@@ -273,13 +276,13 @@ update msg manufacturingModule =
             addMegaPasteis manufacturingModule |> noEffects
 
 
-createPastel : ManufacturingModule -> Int -> ( ManufacturingModule, Cmd Models.Msg )
+createPastel : ManufacturingModule -> Int -> ( ManufacturingModule, Cmd Main.Msg.Msg )
 createPastel manufacturingModule availableDough =
     if availableDough < 1 then
         ( manufacturingModule, Cmd.none )
     else
         ( { manufacturingModule | dough = manufacturingModule.dough - 1 }
-        , Task.perform Models.NewPasteisBaked (Task.succeed 1)
+        , Task.perform NewPasteisBaked (Task.succeed 1)
         )
 
 
@@ -354,7 +357,7 @@ moduleProduction model =
         |> Maybe.withDefault 0.0
 
 
-buyDough : ManufacturingModule -> Float -> ( ManufacturingModule, Cmd Models.Msg )
+buyDough : ManufacturingModule -> Float -> ( ManufacturingModule, Cmd Main.Msg.Msg )
 buyDough model funds =
     let
         cost =
@@ -367,5 +370,5 @@ buyDough model funds =
                 | doughBasePrice = model.doughBasePrice + 0.05
                 , dough = model.dough + model.doughSupply
               }
-            , Task.perform Models.DoughtBought (Task.succeed cost)
+            , Task.perform DoughtBought (Task.succeed cost)
             )
