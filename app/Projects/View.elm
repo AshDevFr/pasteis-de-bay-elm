@@ -15,33 +15,76 @@ import Projects.Model exposing (Project, ProjectCost)
 
 projectCostView : ProjectCost -> Html Main.Msg.Msg
 projectCostView cost =
-    div []
-        [ span [ style [ ( "margin-right", "5px" ) ] ] [ text ("$" ++ (formatInt usLocale cost.funds)) ]
-        , b [] [ text ", " ]
-        , span [ style [ ( "margin-right", "5px" ) ] ] [ text ((formatInt usLocale cost.operations) ++ " operations") ]
-        , b [] [ text ", " ]
-        , span [ style [ ( "margin-right", "5px" ) ] ] [ text ((formatInt usLocale cost.creativity) ++ " creativity") ]
-        , b [] [ text ", " ]
-        , span [ style [ ( "margin-right", "5px" ) ] ] [ text ((formatInt usLocale cost.trust) ++ " trust") ]
-        ]
+    let
+        funds =
+            costView "funds" cost.funds
+
+        operations =
+            costView "operations" cost.operations
+
+        creativity =
+            costView "creativity" cost.creativity
+
+        trust =
+            costView "trust" cost.trust
+
+        costs =
+            List.filter (\s -> not (String.isEmpty s)) [ funds, operations, creativity, trust ]
+    in
+        span [ style [ ( "font-size", "0.9em" ) ] ] [ text (" (" ++ (String.join ", " costs) ++ ")") ]
+
+
+costView : String -> Int -> String
+costView currency amount =
+    case amount of
+        0 ->
+            ""
+
+        _ ->
+            case currency of
+                "funds" ->
+                    "$ " ++ (formatInt usLocale amount)
+
+                _ ->
+                    (formatInt usLocale amount) ++ " " ++ currency
 
 
 projectView : Int -> Model -> Project -> Html Main.Msg.Msg
 projectView index model project =
-    div
-        [ style
-            [ ( "border", "1px solid" )
-            , ( "margin", "5px 0 " )
-            ]
-        ]
-        [ h3 [] [ text project.name ]
-        , h5 [] [ text project.description ]
-        , projectCostView project.cost
-        , button
-            [ onClick (ActivateProject project)
+    div []
+        [ button
+            [ style
+                [ ( "outline", "none" )
+                , ( "background", "lightgray" )
+                , ( "border", "1px solid" )
+                , ( "margin", "0 0 15px" )
+                , ( "padding", "10px" )
+                , ( "text-align", "center" )
+                , ( "width", "400px" )
+                , ( "font-size", "1em" )
+                ]
+            , onClick (ActivateProject project)
             , disabled (canBeBought model project.cost)
             ]
-            [ text "Buy" ]
+            [ div []
+                [ span
+                    [ style
+                        [ ( "font-size", "1em" )
+                        , ( "font-weight", "bold" )
+                        ]
+                    ]
+                    [ text project.name ]
+                , projectCostView project.cost
+                ]
+            , div []
+                [ span
+                    [ style
+                        [ ( "font-size", "0.9em" )
+                        ]
+                    ]
+                    [ text project.description ]
+                ]
+            ]
         ]
 
 
@@ -51,7 +94,10 @@ view model =
         |> Maybe.map
             (\mod ->
                 div
-                    [ style [ ( "margin-top", "10px" ) ] ]
+                    [ style
+                        [ ( "margin-top", "10px" )
+                        ]
+                    ]
                     [ div
                         []
                         [ h2 [] [ text "Rewards" ]
