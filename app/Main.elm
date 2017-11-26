@@ -234,7 +234,7 @@ applyTime model time =
                             elapsedTime =
                                 (Time.inMilliseconds time) - (Time.inMilliseconds lastTick)
                         in
-                            Just <| Basics.max (floor (elapsedTime / 100)) 1
+                            Just <| Basics.min (Basics.max (floor (elapsedTime / 100)) 1) 36000
                     )
                 |> Maybe.withDefault 1
 
