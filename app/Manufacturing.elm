@@ -7,6 +7,8 @@ module Manufacturing
         , adjustdoughCost
         , updateModel
         , makePasteis
+        , tryMakePasteisModule
+        , tryMakeMegaPasteisModule
         )
 
 import Html exposing (Html, div, span, button, text, h2, h3)

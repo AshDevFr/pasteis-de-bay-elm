@@ -6,6 +6,8 @@ import Random
 import Json.Decode as Decode exposing (decodeValue, map)
 import Utils exposing (..)
 import Validator exposing (decodeSaveModel, saveToModel, modelToSave)
+import Cheats as Cheats
+import Cheats.Model exposing (..)
 import Business as Business
 import Business.Msg
 import Manufacturing as Manufacturing exposing (..)
@@ -31,6 +33,9 @@ main =
 
 
 port saveState : SaveModel -> Cmd msg
+
+
+port cheats : (CheatModel -> msg) -> Sub msg
 
 
 emptyModel : Model
@@ -172,11 +177,15 @@ update msg model =
             in
                 ( { model | projectsModule = newModule }, Cmd.none )
 
+        Cheat cheat ->
+            ( Cheats.execute model cheat, Cmd.none )
+
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
     Sub.batch
         [ every (100 * millisecond) Tick
+        , cheats Cheat
         ]
 
 

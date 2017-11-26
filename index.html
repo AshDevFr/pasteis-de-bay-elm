@@ -4,19 +4,35 @@
 <head>
   <meta charset="UTF-8">
   <title>Pasteis de Bay Elm</title>
-  <script type="text/javascript" src="build/elm.js"></script>
+  <script type="text/javascript" src="build/app.js"></script>
 </head>
 
 <body>
 </body>
 
 <script type="text/javascript">
-  var storedState = localStorage.getItem('elm-paperPastel');
-  var startingState = storedState ? JSON.parse(storedState) : null;
-  var mainApp = Elm.Main.fullscreen(startingState);
-  mainApp.ports.saveState.subscribe(function(state) {
-    localStorage.setItem('elm-paperPastel', JSON.stringify(state));
-  });
+  (function () {
+    var storedState = localStorage.getItem('elm-paperPastel');
+    var startingState = storedState ? JSON.parse(storedState) : null;
+    var mainApp = Elm.Main.fullscreen(startingState);
+    mainApp.ports.saveState.subscribe(function(state) {
+      localStorage.setItem('elm-paperPastel', JSON.stringify(state));
+    });
+
+    window._cheats = {
+      addFunds: (number = 1000) => _cheat({action: 'addFunds', amount: number}),
+      addItems: (number = 1000) => _cheat({action: 'addItems', amount: number}),
+      addAutoPasteis: (number = 10) => _cheat({action: 'addAutoPasteis', amount: number}),
+      addAutoMegaPasteis: (number = 10) => _cheat({action: 'addAutoMegaPasteis', amount: number}),
+      addDough: (number = 10000) => _cheat({action: 'addDough', amount: number}),
+      addOps: (number = 1000) => _cheat({action: 'addOps', amount: number}),
+      addCreativity: (number = 100) => _cheat({action: 'addCreativity', amount: number})
+    }
+
+    function _cheat(params) {
+       mainApp.ports.cheats.send(params);
+    }
+  })();
 </script>
 
 </html>
