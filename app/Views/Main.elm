@@ -46,8 +46,8 @@ businessAndMaufacturingView model =
         ]
 
 
-computingView : Model -> Html Main.Msg.Msg
-computingView model =
+computingAndProjectsView : Model -> Html Main.Msg.Msg
+computingAndProjectsView model =
     div
         [ style
             [ ( "float", "left" )
@@ -55,13 +55,7 @@ computingView model =
             ]
         ]
         [ Computing.view model
-        ]
-
-
-projectsView : Model -> Html Main.Msg.Msg
-projectsView model =
-    div []
-        [ Projects.View.view model
+        , Projects.View.view model
         ]
 
 
@@ -72,7 +66,6 @@ view model =
         , div []
             [ makePasteisView model
             , businessAndMaufacturingView model
-            , computingView model
-            , projectsView model
+            , computingAndProjectsView model
             ]
         ]
