@@ -17,11 +17,11 @@ projectCostView : ProjectCost -> Html Main.Msg.Msg
 projectCostView cost =
     div []
         [ span [ style [ ( "margin-right", "5px" ) ] ] [ text ("$" ++ (formatInt usLocale cost.funds)) ]
-        , b [] [ text " , " ]
+        , b [] [ text ", " ]
         , span [ style [ ( "margin-right", "5px" ) ] ] [ text ((formatInt usLocale cost.operations) ++ " operations") ]
-        , b [] [ text " , " ]
+        , b [] [ text ", " ]
         , span [ style [ ( "margin-right", "5px" ) ] ] [ text ((formatInt usLocale cost.creativity) ++ " creativity") ]
-        , b [] [ text " , " ]
+        , b [] [ text ", " ]
         , span [ style [ ( "margin-right", "5px" ) ] ] [ text ((formatInt usLocale cost.trust) ++ " trust") ]
         ]
 
@@ -94,4 +94,4 @@ canBeBought model cost =
         enoughTrust =
             computingModule.trust >= cost.trust
     in
-        enoughFunds && enoughOperations && enoughCreativity && enoughTrust
+        not (enoughFunds && enoughOperations && enoughCreativity && enoughTrust)

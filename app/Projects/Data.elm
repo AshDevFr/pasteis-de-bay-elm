@@ -10,16 +10,16 @@ import Main.Model exposing (Model)
 
 allProjects : List Project
 allProjects =
-    [ improvedAutoClippers
+    [ improvedAutoPasteis
     , begForMoreWire
     ]
 
 
-improvedAutoClippers : Project
-improvedAutoClippers =
+improvedAutoPasteis : Project
+improvedAutoPasteis =
     { id = "project1"
-    , name = "Improved AutoClippers"
-    , description = "Increases AutoClipper performance 25%"
+    , name = "Improved AutoPasteis"
+    , description = "Increases AutoPasteis performance 25%"
     , trigger =
         (\model ->
             model.manufacturingModule.pasteisModule
@@ -44,7 +44,8 @@ begForMoreWire =
         "Admit failure, ask for budget increase to cover cost of 1 spool"
     , trigger =
         (always False)
-        --  portTotal<wireCost && funds<wireCost && wire<1 && unsoldClips<1
+
+    --  portTotal<wireCost && funds<wireCost && wire<1 && unsoldClips<1
     , effect =
         [ MapTrust (flip (-) 1)
         , MapWire (always 1)
