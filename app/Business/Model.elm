@@ -6,8 +6,8 @@ type alias BusinessModule =
     , inventory : Int
     , price : Float
     , demand : Float
-    , demandBoost : Int
+    , demandBoost : Float
     , marketingCost : Int
     , marketingLvl : Int
-    , marketingEffectiveness : Int
+    , marketingEffectiveness : Float
     }

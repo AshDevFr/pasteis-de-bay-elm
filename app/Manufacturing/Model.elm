@@ -3,7 +3,7 @@ module Manufacturing.Model exposing (..)
 
 type alias ManufacturingModule =
     { dough : Int
-    , doughSupply : Int
+    , doughSupply : Float
     , doughCost : Int
     , doughBasePrice : Float
     , pasteisModule : Maybe PasteisModule

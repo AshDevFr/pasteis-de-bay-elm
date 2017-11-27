@@ -127,7 +127,7 @@ updateModel model =
             (1.1 ^ toFloat (model.marketingLvl - 1))
 
         demand =
-            (((0.8 / model.price) * marketing * toFloat model.marketingEffectiveness) * (toFloat model.demandBoost) * 1.1)
+            (((0.8 / model.price) * marketing * model.marketingEffectiveness) * model.demandBoost * 1.1)
     in
         { model
             | demand = demand

@@ -5,7 +5,6 @@ module Projects.Data
 
 import Projects.Model exposing (Project, ProjectCost)
 import Projects.Msg exposing (Msg(..))
-import Main.Model exposing (Model)
 
 
 allProjects : List Project
@@ -30,7 +29,6 @@ improvedAutoPasteis =
     , effect =
         [ MapOperations (flip (-) 750.0)
         , MapPasteisBoost (flip (+) 0.25)
-        , MapPasteisLevel (always 1)
         ]
     , cost = ProjectCost 0 750 0 0
     }
@@ -47,8 +45,8 @@ begForMoreWire =
 
     --  portTotal<wireCost && funds<wireCost && wire<1 && unsoldClips<1
     , effect =
-        [ MapTrust (flip (-) 1)
-        , MapWire (always 1)
+        [ MapOperations (flip (-) 750.0)
+        , MapTrust (flip (-) 100)
         ]
     , cost =
         ProjectCost 0 750 0 100

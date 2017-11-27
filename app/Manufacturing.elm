@@ -370,7 +370,7 @@ buyDough model funds =
         else
             ( { model
                 | doughBasePrice = model.doughBasePrice + 0.05
-                , dough = model.dough + model.doughSupply
+                , dough = model.dough + (floor model.doughSupply)
               }
             , Task.perform DoughtBought (Task.succeed cost)
             )

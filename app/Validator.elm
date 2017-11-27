@@ -6,7 +6,6 @@ module Validator
         )
 
 import Dict exposing (toList, fromList)
-import Projects.Model as Projects
 import Projects.Module.ProjectsModule exposing (ProjectsModule, ProjectsModuleSave)
 import Business.Model exposing (BusinessModule)
 import Manufacturing.Model exposing (ManufacturingModule, PasteisModule, MegaPasteisModule)
@@ -84,17 +83,17 @@ decodeBusinessModule =
         (field "inventory" int)
         (field "price" float)
         (field "demand" float)
-        (field "demandBoost" int)
+        (field "demandBoost" float)
         (field "marketingCost" int)
         (field "marketingLvl" int)
-        (field "marketingEffectiveness" int)
+        (field "marketingEffectiveness" float)
 
 
 decodeManufacturingModule : Decoder ManufacturingModule
 decodeManufacturingModule =
     map8 ManufacturingModule
         (field "dough" int)
-        (field "doughSupply" int)
+        (field "doughSupply" float)
         (field "doughCost" int)
         (field "doughBasePrice" float)
         (maybe (field "pasteisModule" decodePasteisModule))

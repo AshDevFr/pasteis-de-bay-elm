@@ -7,7 +7,9 @@ module Projects.Msg
 type Msg
     = MapOperations (Float -> Float)
     | MapPasteisBoost (Float -> Float)
-    | MapPasteisLevel (Float -> Float)
+    | MapMegaPasteisBoost (Float -> Float)
     | MapTrust (Float -> Float)
-    | MapWire (Float -> Float)
+    | MapWireSupply (Float -> Float)
+    | MapMarketingEffectiveness (Float -> Float)
+    | MapDemandBoost (Float -> Float)
     | Identity
