@@ -20,6 +20,7 @@ import Projects.Update as Projects
 import Main.Msg exposing (..)
 import Main.Model exposing (..)
 import Projects.Init as Projects exposing (tryMakeProjectsModule)
+import Projects.Module.ProjectsModule exposing (ProjectsModule)
 
 
 main : Program (Maybe Decode.Value) Model Msg
@@ -166,16 +167,21 @@ update msg model =
 
         ActivateProject project ->
             let
-                dict =
-                    model.projectsModule
-                        |> Maybe.map (\p -> Dict.insert project.id True p.projectsActivated)
-                        |> Maybe.withDefault Dict.empty
+                updateProjectsModule : String -> ProjectsModule -> ProjectsModule
+                updateProjectsModule projectId mod =
+                    { mod | projectsActivated = Dict.insert projectId True mod.projectsActivated }
 
-                newModule =
-                    model.projectsModule
-                        |> Maybe.map (\pm -> { pm | projectsActivated = dict })
+                updateModelWithProjectsModule : ProjectsModule -> Model
+                updateModelWithProjectsModule pm =
+                    { model | projectsModule = Just pm }
             in
-                ( { model | projectsModule = newModule }, Cmd.none )
+                model.projectsModule
+                    |> Maybe.map
+                        (updateProjectsModule project.id
+                            >> updateModelWithProjectsModule
+                        )
+                    |> Maybe.withDefault model
+                    |> flip (,) Cmd.none
 
         Cheat cheat ->
             ( Cheats.execute model cheat, Cmd.none )
