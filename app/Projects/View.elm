@@ -64,7 +64,7 @@ projectView index model project =
                 , ( "font-size", "1em" )
                 ]
             , onClick (ActivateProject project)
-            , disabled (canBeBought model project.cost)
+            , disabled (not (canBeBought model project.cost))
             ]
             [ div []
                 [ span
@@ -105,7 +105,7 @@ view model =
                         ]
                     , div
                         []
-                        (List.indexedMap (flip projectView model) initList)
+                        (List.indexedMap (flip projectView model) (initList mod))
                     ]
             )
         |> Maybe.withDefault (text "")
@@ -138,6 +138,6 @@ canBeBought model cost =
             creativity >= toFloat cost.creativity
 
         enoughTrust =
-            computingModule.trust >= cost.trust
+            (computingModule.trust - (computingModule.processors + computingModule.memory)) >= cost.trust
     in
-        not (enoughFunds && enoughOperations && enoughCreativity && enoughTrust)
+        (enoughFunds && enoughOperations && enoughCreativity && enoughTrust)

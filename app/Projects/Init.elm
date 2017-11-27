@@ -17,9 +17,13 @@ init =
     { projectsActivated = Dict.empty }
 
 
-initList : List Project
-initList =
-    allProjects
+initList : ProjectsModule -> List Project
+initList projectsModule =
+    List.filter
+        (\p ->
+            not (Dict.get p.id projectsModule.projectsActivated == Just True)
+        )
+        allProjects
 
 
 tryMakeProjectsModule : Model -> Model

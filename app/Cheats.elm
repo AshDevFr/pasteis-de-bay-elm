@@ -79,12 +79,7 @@ addAutoPasteis model amount =
             Manufacturing.tryMakePasteisModule manufacturingModule 1000
 
         newPasteisModule =
-            case pasteisModule of
-                Nothing ->
-                    Nothing
-
-                Just mod ->
-                    Just { mod | level = mod.level + amount }
+            pasteisModule |> Maybe.map (\mod -> { mod | level = mod.level + amount })
 
         newManufacturingModule =
             { manufacturingModule
@@ -106,12 +101,7 @@ addAutoMegaPasteis model amount =
             Manufacturing.tryMakeMegaPasteisModule manufacturingModule
 
         newMegaPasteisModule =
-            case megaPasteisModule of
-                Nothing ->
-                    Nothing
-
-                Just mod ->
-                    Just { mod | level = mod.level + amount }
+            megaPasteisModule |> Maybe.map (\mod -> { mod | level = mod.level + amount })
 
         newManufacturingModule =
             { manufacturingModule
@@ -141,36 +131,36 @@ addDough model amount =
 
 addOps : Model -> Int -> Model
 addOps model amount =
-    case model.computingModule of
-        Nothing ->
-            model
-
-        Just mod ->
-            let
-                newComputingModule =
-                    Just
-                        { mod
-                            | operations = mod.operations + (toFloat amount)
-                        }
-            in
-                { model | computingModule = newComputingModule }
+    model.computingModule
+        |> Maybe.map
+            (\mod ->
+                let
+                    newComputingModule =
+                        Just
+                            { mod
+                                | operations = mod.operations + (toFloat amount)
+                            }
+                in
+                    { model | computingModule = newComputingModule }
+            )
+        |> Maybe.withDefault model
 
 
 addCreativity : Model -> Int -> Model
 addCreativity model amount =
-    case model.computingModule of
-        Nothing ->
-            model
+    model.computingModule
+        |> Maybe.map
+            (\mod ->
+                let
+                    creativity =
+                        Maybe.withDefault 0 mod.creativity
 
-        Just mod ->
-            let
-                creativity =
-                    Maybe.withDefault 0 mod.creativity
-
-                newComputingModule =
-                    Just
-                        { mod
-                            | creativity = Just (creativity + (toFloat amount))
-                        }
-            in
-                { model | computingModule = newComputingModule }
+                    newComputingModule =
+                        Just
+                            { mod
+                                | creativity = Just (creativity + (toFloat amount))
+                            }
+                in
+                    { model | computingModule = newComputingModule }
+            )
+        |> Maybe.withDefault model

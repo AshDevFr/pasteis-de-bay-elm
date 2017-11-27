@@ -32,91 +32,88 @@ init =
 
 view : Model -> Html Msg
 view model =
-    case model.computingModule of
-        Nothing ->
-            text ""
-
-        Just mod ->
-            div
-                [ style
-                    [ ( "margin", "4px 8px" )
-                    , ( "width", "100%" )
-                    ]
-                ]
-                [ div
-                    [ style [ ( "flex-direction", "column" ) ] ]
-                    [ h2 [] [ text "Research" ]
-                    , h3 [] [ text ("Trust : " ++ (formatInt usLocale mod.trust)) ]
-                    ]
-                , div
-                    []
-                    [ div []
-                        [ text ("Next trust " ++ (formatInt usLocale ((nextTrust mod.trust + 1) * 1000)))
+    model.computingModule
+        |> Maybe.map
+            (\mod ->
+                div
+                    [ style
+                        [ ( "margin", "4px 8px" )
+                        , ( "width", "100%" )
                         ]
                     ]
-                , div
-                    [ style [ ( "margin-top", "10px" ) ] ]
-                    [ div []
-                        [ button
-                            [ onClick AddProcessor
-                            , disabled ((mod.trust - (mod.processors + mod.memory)) < 1)
-                            ]
-                            [ text "Processors"
-                            ]
-                        , text (" " ++ (formatInt usLocale mod.processors))
-                        ]
-                    , div []
-                        [ button
-                            [ onClick AddMemory
-                            , disabled ((mod.trust - (mod.processors + mod.memory)) < 1)
-                            ]
-                            [ text "Memory"
-                            ]
-                        , text (" " ++ (formatInt usLocale mod.memory))
-                        ]
-                    ]
-                , div
-                    [ style [ ( "margin-top", "10px" ) ] ]
-                    [ div []
-                        [ text
-                            ("Operations : "
-                                ++ (formatInt usLocale (floor mod.operations))
-                                ++ " / "
-                                ++ (formatInt usLocale mod.memoryLimit)
-                            )
+                    [ div
+                        [ style [ ( "flex-direction", "column" ) ] ]
+                        [ h2 [] [ text "Research" ]
+                        , h3 [] [ text ("Trust : " ++ (formatInt usLocale mod.trust)) ]
                         ]
                     , div
                         []
-                        [ text ("Creativity : " ++ (formatInt usLocale (floor (mod.creativity |> Maybe.withDefault 0.0))))
+                        [ div []
+                            [ text ("Next trust " ++ (formatInt usLocale ((nextTrust mod.trust + 1) * 1000)))
+                            ]
+                        ]
+                    , div
+                        [ style [ ( "margin-top", "10px" ) ] ]
+                        [ div []
+                            [ button
+                                [ onClick AddProcessor
+                                , disabled ((mod.trust - (mod.processors + mod.memory)) < 1)
+                                ]
+                                [ text "Processors"
+                                ]
+                            , text (" " ++ (formatInt usLocale mod.processors))
+                            ]
+                        , div []
+                            [ button
+                                [ onClick AddMemory
+                                , disabled ((mod.trust - (mod.processors + mod.memory)) < 1)
+                                ]
+                                [ text "Memory"
+                                ]
+                            , text (" " ++ (formatInt usLocale mod.memory))
+                            ]
+                        ]
+                    , div
+                        [ style [ ( "margin-top", "10px" ) ] ]
+                        [ div []
+                            [ text
+                                ("Operations : "
+                                    ++ (formatInt usLocale (floor mod.operations))
+                                    ++ " / "
+                                    ++ (formatInt usLocale mod.memoryLimit)
+                                )
+                            ]
+                        , div
+                            []
+                            [ text ("Creativity : " ++ (formatInt usLocale (floor (mod.creativity |> Maybe.withDefault 0.0))))
+                            ]
                         ]
                     ]
-                ]
+            )
+        |> Maybe.withDefault (text "")
 
 
 updateModel : Model -> Maybe ComputingModule
 updateModel model =
-    case model.computingModule of
-        Nothing ->
-            Nothing
-
-        Just mod ->
-            let
-                addTrust =
-                    model.pasteis >= ((nextTrust mod.trust + 1) * 1000)
-            in
-                case addTrust of
-                    False ->
-                        Just
+    model.computingModule
+        |> Maybe.map
+            (\mod ->
+                let
+                    addTrust =
+                        model.pasteis >= ((nextTrust mod.trust + 1) * 1000)
+                in
+                    case addTrust of
+                        False ->
                             { mod
                                 | memoryLimit = mod.memory * 1000
                             }
 
-                    True ->
-                        Just
+                        True ->
                             { mod
                                 | memoryLimit = mod.memory * 1000
                                 , trust = mod.trust + 1
                             }
+            )
 
 
 tryMakeComputingModule : Model -> Model

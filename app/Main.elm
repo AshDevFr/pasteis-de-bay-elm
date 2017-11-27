@@ -79,16 +79,16 @@ update msg model =
                 ( { model | businessModule = newBusinessModule }, cmd )
 
         ProjectsMessage projectsMessage ->
-            case model.projectsModule of
-                Nothing ->
-                    ( model, Cmd.none )
-
-                Just mod ->
-                    let
-                        ( newProjectsModule, cmd ) =
-                            Projects.update projectsMessage mod
-                    in
-                        ( { model | projectsModule = Just newProjectsModule }, cmd )
+            model.projectsModule
+                |> Maybe.map
+                    (\mod ->
+                        let
+                            ( newProjectsModule, cmd ) =
+                                Projects.update projectsMessage mod
+                        in
+                            ( { model | projectsModule = Just newProjectsModule }, cmd )
+                    )
+                |> Maybe.withDefault ( model, Cmd.none )
 
         Tick newTime ->
             ( applyTime model newTime

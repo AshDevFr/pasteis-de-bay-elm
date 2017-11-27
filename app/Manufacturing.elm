@@ -89,29 +89,29 @@ pasteisView model =
         manufacturingModule =
             model.manufacturingModule
     in
-        case manufacturingModule.pasteisModule of
-            Nothing ->
-                div [] [ text "" ]
-
-            Just mod ->
-                div
-                    [ style [ ( "margin-top", "10px" ) ] ]
-                    [ div []
+        manufacturingModule.pasteisModule
+            |> Maybe.map
+                (\mod ->
+                    div
+                        [ style [ ( "margin-top", "10px" ) ] ]
                         [ div []
-                            [ button
-                                [ onClick BuyPasteis
-                                , disabled (businessModule.funds < mod.cost)
+                            [ div []
+                                [ button
+                                    [ onClick BuyPasteis
+                                    , disabled (businessModule.funds < mod.cost)
+                                    ]
+                                    [ text "AutoPasteis"
+                                    ]
+                                , text (" " ++ (toString mod.level))
                                 ]
-                                [ text "AutoPasteis"
+                            , div
+                                []
+                                [ span [] [ text ("Cost: $ " ++ (formatFloat usLocale mod.cost)) ]
                                 ]
-                            , text (" " ++ (toString mod.level))
-                            ]
-                        , div
-                            []
-                            [ span [] [ text ("Cost: $ " ++ (formatFloat usLocale mod.cost)) ]
                             ]
                         ]
-                    ]
+                )
+            |> Maybe.withDefault (div [] [ text "" ])
 
 
 megaPasteisView : Model -> Html Main.Msg.Msg
@@ -123,29 +123,29 @@ megaPasteisView model =
         manufacturingModule =
             model.manufacturingModule
     in
-        case manufacturingModule.megaPasteisModule of
-            Nothing ->
-                div [] [ text "" ]
-
-            Just mod ->
-                div
-                    [ style [ ( "margin-top", "10px" ) ] ]
-                    [ div []
+        manufacturingModule.megaPasteisModule
+            |> Maybe.map
+                (\mod ->
+                    div
+                        [ style [ ( "margin-top", "10px" ) ] ]
                         [ div []
-                            [ button
-                                [ onClick BuyMegaPasteis
-                                , disabled (businessModule.funds < mod.cost)
+                            [ div []
+                                [ button
+                                    [ onClick BuyMegaPasteis
+                                    , disabled (businessModule.funds < mod.cost)
+                                    ]
+                                    [ text "MegaPasteis"
+                                    ]
+                                , text (" " ++ (toString mod.level))
                                 ]
-                                [ text "MegaPasteis"
+                            , div
+                                []
+                                [ span [] [ text ("Cost: $ " ++ (formatFloat usLocale mod.cost)) ]
                                 ]
-                            , text (" " ++ (toString mod.level))
-                            ]
-                        , div
-                            []
-                            [ span [] [ text ("Cost: $ " ++ (formatFloat usLocale mod.cost)) ]
                             ]
                         ]
-                    ]
+                )
+            |> Maybe.withDefault (div [] [ text "" ])
 
 
 updateModel : ManufacturingModule -> BusinessModule -> ManufacturingModule

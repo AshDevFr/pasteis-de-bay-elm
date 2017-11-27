@@ -3,11 +3,10 @@ module Projects.Update
         ( update
         )
 
-import Html exposing (Html, text)
 import Dict as Dict
 import Projects.Msg as Projects exposing (..)
 import Projects.Data exposing (allProjects)
-import Projects.Model exposing (Project)
+import Projects.Model exposing (Project, ProjectCost)
 import Projects.Module.ProjectsModule exposing (ProjectsModule)
 
 
