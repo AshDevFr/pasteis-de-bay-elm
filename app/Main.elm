@@ -17,10 +17,11 @@ import Views.Main as MainView
 import Task exposing (..)
 import Dict
 import Projects.Update as Projects
-import Main.Msg exposing (..)
+import Main.Msg as Main exposing (..)
 import Main.Model exposing (..)
 import Projects.Init as Projects exposing (tryMakeProjectsModule)
 import Projects.Module.ProjectsModule exposing (ProjectsModule)
+import Projects.Msg as Projects
 
 
 main : Program (Maybe Decode.Value) Model Msg
@@ -174,11 +175,31 @@ update msg model =
                 updateModelWithProjectsModule : ProjectsModule -> Model
                 updateModelWithProjectsModule pm =
                     { model | projectsModule = Just pm }
+
+                applyEffects : List Projects.Msg -> Model -> Model
+                applyEffects lst model =
+                    let
+                        doApply : Projects.Msg -> Model -> Model
+                        doApply msg model =
+                            case msg of
+                                Projects.MapOperations fn ->
+                                    model.computingModule
+                                        |> Maybe.map
+                                            ((\mod -> { mod | operations = fn mod.operations })
+                                                >> (\cm -> { model | computingModule = Just cm })
+                                            )
+                                        |> Maybe.withDefault model
+
+                                _ ->
+                                    model
+                    in
+                        List.foldl doApply model lst
             in
                 model.projectsModule
                     |> Maybe.map
                         (updateProjectsModule project.id
                             >> updateModelWithProjectsModule
+                            >> (applyEffects project.effect)
                         )
                     |> Maybe.withDefault model
                     |> flip (,) Cmd.none
