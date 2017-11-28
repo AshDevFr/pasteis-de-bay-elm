@@ -7,12 +7,12 @@ import Html exposing (Html, div, span, button, text, h2, h3)
 import Html.Events exposing (onClick)
 import Html.Attributes exposing (style, disabled)
 import FormatNumber exposing (formatFloat, formatInt, usLocale)
-import Main.Msg exposing (Msg(..))
+import Main.Msg as Main exposing (Msg(..))
+import Main.Model as Main exposing (SaveModel, Model)
 import Manufacturing.Msg as Manufacturing exposing (..)
-import Main.Model exposing (SaveModel, Model)
 
 
-view : Model -> Html Main.Msg.Msg
+view : Model -> Html Main.Msg
 view model =
     let
         businessModule =
@@ -55,7 +55,7 @@ view model =
             ]
 
 
-pasteisView : Model -> Html Main.Msg.Msg
+pasteisView : Model -> Html Main.Msg
 pasteisView model =
     let
         businessModule =
@@ -89,7 +89,7 @@ pasteisView model =
             |> Maybe.withDefault (div [] [ text "" ])
 
 
-megaPasteisView : Model -> Html Main.Msg.Msg
+megaPasteisView : Model -> Html Main.Msg
 megaPasteisView model =
     let
         businessModule =

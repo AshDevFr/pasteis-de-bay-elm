@@ -4,10 +4,10 @@ import FormatNumber exposing (formatFloat, formatInt, usLocale)
 import Html exposing (Html, div, button, text, h1)
 import Html.Events exposing (onClick)
 import Html.Attributes exposing (style, disabled)
-import Business as Business
+import Business.View as Business
 import Manufacturing.Msg exposing (..)
-import Main.Model exposing (Model)
-import Main.Msg exposing (..)
+import Main.Model as Main exposing (Model)
+import Main.Msg as Main exposing (..)
 import Computing.View as Computing exposing (view)
 import Manufacturing.View as Manufacturing exposing (view)
 import Projects.View
@@ -20,7 +20,7 @@ header pasteis =
         ]
 
 
-makePasteisView : Model -> Html Main.Msg.Msg
+makePasteisView : Model -> Html Main.Msg
 makePasteisView model =
     div []
         [ div []
@@ -38,7 +38,7 @@ makePasteisView model =
         ]
 
 
-businessAndMaufacturingView : Model -> Html Main.Msg.Msg
+businessAndMaufacturingView : Model -> Html Main.Msg
 businessAndMaufacturingView model =
     div [ style [ ( "float", "left" ) ] ]
         [ Business.view model
@@ -46,7 +46,7 @@ businessAndMaufacturingView model =
         ]
 
 
-computingAndProjectsView : Model -> Html Main.Msg.Msg
+computingAndProjectsView : Model -> Html Main.Msg
 computingAndProjectsView model =
     div
         [ style
@@ -59,7 +59,7 @@ computingAndProjectsView model =
         ]
 
 
-view : Model -> Html Main.Msg.Msg
+view : Model -> Html Main.Msg
 view model =
     div []
         [ header model.pasteis

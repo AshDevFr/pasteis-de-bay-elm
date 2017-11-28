@@ -8,14 +8,14 @@ import Html.Attributes exposing (disabled, style)
 import Html.Events exposing (onClick)
 import FormatNumber exposing (formatFloat, formatInt, usLocale)
 import Projects.Init exposing (initList)
-import Main.Msg exposing (..)
-import Main.Model exposing (Model)
+import Main.Model as Main exposing (Model)
+import Main.Msg as Main exposing (..)
 import Projects.Model exposing (Project, ProjectCost)
 import Projects.Update exposing (buy)
 import Result.Extra exposing (isErr)
 
 
-projectCostView : ProjectCost -> Html Main.Msg.Msg
+projectCostView : ProjectCost -> Html Main.Msg
 projectCostView cost =
     let
         funds =
@@ -51,7 +51,7 @@ costView currency amount =
                     (formatInt usLocale amount) ++ " " ++ currency
 
 
-projectView : Int -> Model -> Project -> Html Main.Msg.Msg
+projectView : Int -> Model -> Project -> Html Main.Msg
 projectView index model project =
     div []
         [ button
@@ -90,7 +90,7 @@ projectView index model project =
         ]
 
 
-view : Model -> Html Main.Msg.Msg
+view : Model -> Html Main.Msg
 view model =
     model.projectsModule
         |> Maybe.map

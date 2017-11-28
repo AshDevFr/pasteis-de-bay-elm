@@ -9,3 +9,6 @@ type Msg
     | RaisePrice
     | BuyAds
     | RemoveFunds Float
+    | UpdateDemand
+    | SellPasteis Float
+    | AddItems Int

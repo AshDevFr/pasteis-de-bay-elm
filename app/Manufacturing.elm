@@ -9,12 +9,11 @@ module Manufacturing
         , tryMakeMegaPasteisModule
         )
 
-import Business as Business
-import Main.Msg exposing (Msg(..))
+import Main.Msg as Main exposing (Msg(..))
+import Main.Model as Main exposing (SaveModel, Model)
 import Manufacturing.Msg as Manufacturing exposing (..)
 import Business.Model exposing (BusinessModule)
 import Manufacturing.Model exposing (ManufacturingModule, PasteisModule, MegaPasteisModule)
-import Main.Model exposing (SaveModel, Model)
 import Task exposing (..)
 
 
@@ -132,7 +131,7 @@ noEffects =
     flip (,) Cmd.none
 
 
-update : Manufacturing.Msg -> ManufacturingModule -> ( ManufacturingModule, Cmd Main.Msg.Msg )
+update : Manufacturing.Msg -> ManufacturingModule -> ( ManufacturingModule, Cmd Main.Msg )
 update msg manufacturingModule =
     case msg of
         BakePastel availableDough ->
@@ -148,7 +147,7 @@ update msg manufacturingModule =
             addMegaPasteis manufacturingModule |> noEffects
 
 
-createPastel : ManufacturingModule -> Int -> ( ManufacturingModule, Cmd Main.Msg.Msg )
+createPastel : ManufacturingModule -> Int -> ( ManufacturingModule, Cmd Main.Msg )
 createPastel manufacturingModule availableDough =
     if availableDough < 1 then
         ( manufacturingModule, Cmd.none )
@@ -158,7 +157,7 @@ createPastel manufacturingModule availableDough =
         )
 
 
-makePasteis : Model -> Model
+makePasteis : Model -> ( Model, Cmd Main.Msg )
 makePasteis model =
     case model.manufacturingModule.dough of
         0 ->
@@ -172,9 +171,11 @@ makePasteis model =
                         , partialPasteis = 0
                     }
             in
-                { model
+                ( { model
                     | manufacturingModule = newManufacturingModule
-                }
+                  }
+                , Cmd.none
+                )
 
         _ ->
             let
@@ -206,11 +207,12 @@ makePasteis model =
                         , pasteisMakerRate = pasteisMakerRate
                     }
             in
-                { model
+                ( { model
                     | pasteis = model.pasteis + fullPasteis
-                    , businessModule = Business.addItems model.businessModule fullPasteis
                     , manufacturingModule = newManufacturingModule
-                }
+                  }
+                , Task.perform NewPasteisBaked (Task.succeed fullPasteis)
+                )
 
 
 {-| Use an extensible record to enable row polymorphism
@@ -229,7 +231,7 @@ moduleProduction model =
         |> Maybe.withDefault 0.0
 
 
-buyDough : ManufacturingModule -> Float -> ( ManufacturingModule, Cmd Main.Msg.Msg )
+buyDough : ManufacturingModule -> Float -> ( ManufacturingModule, Cmd Main.Msg )
 buyDough model funds =
     let
         cost =

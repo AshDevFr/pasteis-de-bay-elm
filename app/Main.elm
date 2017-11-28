@@ -8,8 +8,8 @@ import Utils exposing (..)
 import Validator exposing (decodeSaveModel, saveToModel, modelToSave)
 import Cheats as Cheats
 import Cheats.Model exposing (..)
-import Business as Business
 import Business.Msg
+import Business.Update as Business
 import Manufacturing as Manufacturing exposing (..)
 import Manufacturing.Init as Manufacturing
 import Manufacturing.Msg
@@ -59,7 +59,6 @@ init savedModel =
         |> Maybe.map (Result.withDefault emptyModel)
         |> Maybe.withDefault emptyModel
         |> updateModel
-        |> flip (,) Cmd.none
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -92,11 +91,16 @@ update msg model =
                 |> Maybe.withDefault ( model, Cmd.none )
 
         Tick newTime ->
-            ( applyTime model newTime
-            , Cmd.batch
-                [ saveState (modelToSave model)
-                ]
-            )
+            let
+                ( mod, cmds ) =
+                    applyTime model newTime
+            in
+                ( mod
+                , Cmd.batch
+                    [ saveState (modelToSave model)
+                    , cmds
+                    ]
+                )
 
         BuyPasteis ->
             model.manufacturingModule.pasteisModule
@@ -150,17 +154,21 @@ update msg model =
             ( emptyModel, Cmd.none )
 
         UpdateModel ->
-            ( updateModel model, Cmd.none )
+            updateModel model
 
+        --, Cmd.none )
         NewPasteisBaked cnt ->
             let
+                ( bm, cmds ) =
+                    Business.update (Business.Msg.AddItems cnt) model.businessModule
+
                 newModel =
                     { model
-                        | businessModule = Business.addItems model.businessModule cnt
+                        | businessModule = bm
                         , pasteis = model.pasteis + cnt
                     }
             in
-                ( newModel, Cmd.none )
+                ( newModel, cmds )
 
         DoughtBought cost ->
             ( model
@@ -338,11 +346,11 @@ subscriptions model =
         ]
 
 
-updateModel : Model -> Model
+updateModel : Model -> ( Model, Cmd Main.Msg )
 updateModel model =
     let
-        businessModule =
-            Business.updateModel model.businessModule
+        ( businessModule, cmds ) =
+            Business.update Business.Msg.UpdateDemand model.businessModule
 
         manufacturingModule =
             Manufacturing.updateModel model.manufacturingModule businessModule
@@ -350,13 +358,15 @@ updateModel model =
         computingModule =
             Computing.updateModel model
     in
-        { model
+        ( { model
             | businessModule = businessModule
             , manufacturingModule = manufacturingModule
             , computingModule = computingModule
-        }
+          }
             |> Projects.tryMakeProjectsModule
             |> Computing.tryMakeComputingModule
+        , cmds
+        )
 
 
 type alias Simulations =
@@ -365,7 +375,7 @@ type alias Simulations =
     }
 
 
-applyTime : Model -> Time -> Model
+applyTime : Model -> Time -> ( Model, Cmd Msg )
 applyTime model time =
     let
         setLastTick : Model -> Time -> Model
@@ -387,8 +397,8 @@ applyTime model time =
                     )
                 |> Maybe.withDefault 1
 
-        step : Int -> ( Model, Random.Seed ) -> ( Model, Random.Seed )
-        step it ( model, seed ) =
+        step : Int -> ( ( Model, Cmd Msg ), Random.Seed ) -> ( ( Model, Cmd Msg ), Random.Seed )
+        step it ( ( model, msg ), seed ) =
             let
                 ( pasteisSimulation, seed1 ) =
                     Utils.randomFloat 0 100 seed
@@ -403,7 +413,7 @@ applyTime model time =
     in
         setLastTick model time
             |> \updatedModel ->
-                List.foldl step ( updatedModel, seed0 ) range
+                List.foldl step ( ( updatedModel, Cmd.none ), seed0 ) range
                     |> Tuple.first
 
 
@@ -412,21 +422,33 @@ view =
     Main.view
 
 
-applyTime_ : Model -> Simulations -> Model
+applyTime_ : Model -> Simulations -> ( Model, Cmd Msg )
 applyTime_ model { pasteisSimulation, doughCostSimulation } =
-    { model
-        | businessModule = Business.sellPasteis model.businessModule pasteisSimulation
-        , manufacturingModule = Manufacturing.adjustdoughCost model.manufacturingModule doughCostSimulation
-    }
-        |> Manufacturing.makePasteis
-        |> makeOperations
-        |> updateModel
+    let
+        ( bm, cmds ) =
+            Business.update (Business.Msg.SellPasteis pasteisSimulation) model.businessModule
+    in
+        { model
+            | businessModule = bm
+            , manufacturingModule = Manufacturing.adjustdoughCost model.manufacturingModule doughCostSimulation
+        }
+            |> Manufacturing.makePasteis
+            |> (\( mod, cmds1 ) ->
+                    makeOperations mod
+                        |> (\( mod2, cmds2 ) -> ( mod2, Cmd.batch [ cmds, cmds1, cmds2 ] ))
+               )
+            |> (\( mod, cmds1 ) ->
+                    updateModel mod
+                        |> (\( mod2, cmds2 ) -> ( mod2, Cmd.batch [ cmds1, cmds2 ] ))
+               )
 
 
-makeOperations : Model -> Model
+makeOperations : Model -> ( Model, Cmd msg )
 makeOperations model =
-    { model
+    ( { model
         | computingModule =
             model.computingModule
                 |> Maybe.map Computing.makeOperations
-    }
+      }
+    , Cmd.none
+    )

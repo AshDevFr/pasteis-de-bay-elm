@@ -4,9 +4,6 @@ import Random
 import FormatNumber exposing (formatFloat, usLocale)
 
 
--- import Models exposing (..)
-
-
 demandPercentage : Float -> String
 demandPercentage demand =
     formatFloat usLocale (demand * 10)
