@@ -11,7 +11,8 @@ import Projects.Init exposing (initList)
 import Main.Msg exposing (..)
 import Main.Model exposing (Model)
 import Projects.Model exposing (Project, ProjectCost)
-import Projects.Update exposing (canBeBought)
+import Projects.Update exposing (buy)
+import Result.Extra exposing (isErr)
 
 
 projectCostView : ProjectCost -> Html Main.Msg.Msg
@@ -65,7 +66,7 @@ projectView index model project =
                 , ( "font-size", "1em" )
                 ]
             , onClick (ActivateProject project)
-            , disabled (not (canBeBought model project.cost))
+            , disabled (buy model project.cost |> isErr)
             ]
             [ div []
                 [ span

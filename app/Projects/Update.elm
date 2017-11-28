@@ -1,7 +1,7 @@
 module Projects.Update
     exposing
         ( update
-        , canBeBought
+        , buy
         )
 
 import Dict as Dict
@@ -27,8 +27,8 @@ update msg projectsModule =
     ( projectsModule, Cmd.none )
 
 
-canBeBought : Model -> ProjectCost -> Bool
-canBeBought model cost =
+buy : Model -> ProjectCost -> Result String Model
+buy model cost =
     let
         enoughFunds =
             model.businessModule.funds >= cost.funds
@@ -56,4 +56,9 @@ canBeBought model cost =
         enoughTrust =
             (computingModule.trust - (computingModule.processors + computingModule.memory)) >= cost.trust
     in
-        (enoughFunds && enoughOperations && enoughCreativity && enoughTrust)
+        case (enoughFunds && enoughOperations && enoughCreativity && enoughTrust) of
+            False ->
+                Err "Money can't buy happiness. Or lots of it."
+
+            True ->
+                Ok model
