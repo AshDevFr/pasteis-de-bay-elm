@@ -1,4 +1,4 @@
-module Views.Main exposing (view)
+module Main.View exposing (view)
 
 import FormatNumber exposing (formatFloat, formatInt, usLocale)
 import Html exposing (Html, div, button, text, h1)
@@ -9,7 +9,7 @@ import Manufacturing exposing (..)
 import Manufacturing.Msg exposing (..)
 import Main.Model exposing (Model)
 import Main.Msg exposing (..)
-import Computing as Computing
+import Computing.View as Computing exposing (view)
 import Projects.View
 
 

@@ -13,7 +13,7 @@ import Business.Msg
 import Manufacturing as Manufacturing exposing (..)
 import Manufacturing.Msg
 import Computing as Computing
-import Views.Main as MainView
+import Main.View as Main
 import Task exposing (..)
 import Dict
 import Projects.Update as Projects
@@ -408,7 +408,7 @@ applyTime model time =
 
 view : Model -> Html Msg
 view =
-    MainView.view
+    Main.view
 
 
 applyTime_ : Model -> Simulations -> Model
