@@ -16,8 +16,8 @@ type alias Project =
 
 
 type alias ProjectCost =
-    { funds : Int
-    , operations : Int
-    , creativity : Int
+    { funds : Float
+    , operations : Float
+    , creativity : Float
     , trust : Int
     }

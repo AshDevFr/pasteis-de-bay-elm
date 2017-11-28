@@ -11,19 +11,20 @@ import Projects.Init exposing (initList)
 import Main.Msg exposing (..)
 import Main.Model exposing (Model)
 import Projects.Model exposing (Project, ProjectCost)
+import Projects.Update exposing (canBeBought)
 
 
 projectCostView : ProjectCost -> Html Main.Msg.Msg
 projectCostView cost =
     let
         funds =
-            costView "funds" cost.funds
+            costView "funds" (floor cost.funds)
 
         operations =
-            costView "operations" cost.operations
+            costView "operations" (floor cost.operations)
 
         creativity =
-            costView "creativity" cost.creativity
+            costView "creativity" (floor cost.creativity)
 
         trust =
             costView "trust" cost.trust
@@ -109,35 +110,3 @@ view model =
                     ]
             )
         |> Maybe.withDefault (text "")
-
-
-canBeBought : Model -> ProjectCost -> Bool
-canBeBought model cost =
-    let
-        enoughFunds =
-            model.businessModule.funds >= (toFloat cost.funds)
-
-        computingModule =
-            Maybe.withDefault
-                { trust = 0
-                , processors = 0
-                , memory = 0
-                , memoryLimit = 0
-                , operations = 0
-                , creativity = Just 0
-                }
-                model.computingModule
-
-        creativity =
-            Maybe.withDefault 0 computingModule.creativity
-
-        enoughOperations =
-            computingModule.operations >= toFloat cost.operations
-
-        enoughCreativity =
-            creativity >= toFloat cost.creativity
-
-        enoughTrust =
-            (computingModule.trust - (computingModule.processors + computingModule.memory)) >= cost.trust
-    in
-        (enoughFunds && enoughOperations && enoughCreativity && enoughTrust)

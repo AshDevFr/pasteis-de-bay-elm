@@ -167,42 +167,163 @@ update msg model =
             )
 
         ActivateProject project ->
-            let
-                updateProjectsModule : String -> ProjectsModule -> ProjectsModule
-                updateProjectsModule projectId mod =
-                    { mod | projectsActivated = Dict.insert projectId True mod.projectsActivated }
+            case (Projects.canBeBought model project.cost) of
+                False ->
+                    ( model, Cmd.none )
 
-                updateModelWithProjectsModule : ProjectsModule -> Model
-                updateModelWithProjectsModule pm =
-                    { model | projectsModule = Just pm }
-
-                applyEffects : List Projects.Msg -> Model -> Model
-                applyEffects lst model =
+                True ->
                     let
-                        doApply : Projects.Msg -> Model -> Model
-                        doApply msg model =
-                            case msg of
-                                Projects.MapOperations fn ->
-                                    model.computingModule
-                                        |> Maybe.map
-                                            ((\mod -> { mod | operations = fn mod.operations })
-                                                >> (\cm -> { model | computingModule = Just cm })
-                                            )
-                                        |> Maybe.withDefault model
+                        updateProjectsModule : String -> ProjectsModule -> ProjectsModule
+                        updateProjectsModule projectId mod =
+                            { mod | projectsActivated = Dict.insert projectId True mod.projectsActivated }
 
-                                _ ->
-                                    model
+                        updateModelWithProjectsModule : ProjectsModule -> Model
+                        updateModelWithProjectsModule pm =
+                            { model | projectsModule = Just pm }
+
+                        applyEffects : List Projects.Msg -> Model -> Model
+                        applyEffects lst model =
+                            let
+                                doApply : Projects.Msg -> Model -> Model
+                                doApply msg model =
+                                    case msg of
+                                        Projects.MapPasteisBoost fn ->
+                                            let
+                                                manufacturingModule =
+                                                    model.manufacturingModule
+
+                                                newPasteisModule =
+                                                    manufacturingModule.pasteisModule
+                                                        |> Maybe.map
+                                                            (\mod -> { mod | boost = fn mod.boost })
+
+                                                newManufacturingModule =
+                                                    { manufacturingModule
+                                                        | pasteisModule = newPasteisModule
+                                                    }
+                                            in
+                                                { model | manufacturingModule = newManufacturingModule }
+
+                                        Projects.MapMegaPasteisBoost fn ->
+                                            let
+                                                manufacturingModule =
+                                                    model.manufacturingModule
+
+                                                newMegaPasteisModule =
+                                                    manufacturingModule.megaPasteisModule
+                                                        |> Maybe.map
+                                                            (\mod -> { mod | boost = fn mod.boost })
+
+                                                newManufacturingModule =
+                                                    { manufacturingModule
+                                                        | megaPasteisModule = newMegaPasteisModule
+                                                    }
+                                            in
+                                                { model | manufacturingModule = newManufacturingModule }
+
+                                        Projects.MapWireSupply fn ->
+                                            let
+                                                manufacturingModule =
+                                                    model.manufacturingModule
+
+                                                newManufacturingModule =
+                                                    { manufacturingModule
+                                                        | doughSupply = fn manufacturingModule.doughSupply
+                                                    }
+                                            in
+                                                { model | manufacturingModule = newManufacturingModule }
+
+                                        Projects.MapMarketingEffectiveness fn ->
+                                            let
+                                                businessModule =
+                                                    model.businessModule
+
+                                                newBusinessModule =
+                                                    { businessModule
+                                                        | marketingEffectiveness = fn businessModule.marketingEffectiveness
+                                                    }
+                                            in
+                                                { model | businessModule = newBusinessModule }
+
+                                        Projects.MapDemandBoost fn ->
+                                            let
+                                                businessModule =
+                                                    model.businessModule
+
+                                                newBusinessModule =
+                                                    { businessModule
+                                                        | demandBoost = fn businessModule.demandBoost
+                                                    }
+                                            in
+                                                { model | businessModule = newBusinessModule }
+
+                                        Projects.MapFunds fn ->
+                                            let
+                                                businessModule =
+                                                    model.businessModule
+
+                                                newBusinessModule =
+                                                    { businessModule
+                                                        | funds = fn businessModule.funds
+                                                    }
+                                            in
+                                                { model | businessModule = newBusinessModule }
+
+                                        Projects.MapOperations fn ->
+                                            model.computingModule
+                                                |> Maybe.map
+                                                    ((\mod -> { mod | operations = fn mod.operations })
+                                                        >> (\cm -> { model | computingModule = Just cm })
+                                                    )
+                                                |> Maybe.withDefault model
+
+                                        Projects.MapEnableCreativity ->
+                                            model.computingModule
+                                                |> Maybe.map
+                                                    ((\mod ->
+                                                        { mod | creativity = Just (mod.creativity |> Maybe.withDefault 0) }
+                                                     )
+                                                        >> (\cm -> { model | computingModule = Just cm })
+                                                    )
+                                                |> Maybe.withDefault model
+
+                                        Projects.MapCreativity fn ->
+                                            model.computingModule
+                                                |> Maybe.map
+                                                    ((\mod ->
+                                                        (mod.creativity
+                                                            |> Maybe.map
+                                                                (\creativity ->
+                                                                    { mod | creativity = Just (fn creativity) }
+                                                                )
+                                                            |> Maybe.withDefault mod
+                                                        )
+                                                     )
+                                                        >> (\cm -> { model | computingModule = Just cm })
+                                                    )
+                                                |> Maybe.withDefault model
+
+                                        Projects.MapTrust fn ->
+                                            model.computingModule
+                                                |> Maybe.map
+                                                    ((\mod -> { mod | trust = fn mod.trust })
+                                                        >> (\cm -> { model | computingModule = Just cm })
+                                                    )
+                                                |> Maybe.withDefault model
+
+                                        _ ->
+                                            model
+                            in
+                                List.foldl doApply model lst
                     in
-                        List.foldl doApply model lst
-            in
-                model.projectsModule
-                    |> Maybe.map
-                        (updateProjectsModule project.id
-                            >> updateModelWithProjectsModule
-                            >> (applyEffects project.effect)
-                        )
-                    |> Maybe.withDefault model
-                    |> flip (,) Cmd.none
+                        model.projectsModule
+                            |> Maybe.map
+                                (updateProjectsModule project.id
+                                    >> updateModelWithProjectsModule
+                                    >> (applyEffects project.effect)
+                                )
+                            |> Maybe.withDefault model
+                            |> flip (,) Cmd.none
 
         Cheat cheat ->
             ( Cheats.execute model cheat, Cmd.none )

@@ -128,7 +128,7 @@ decodeComputingModule =
         (field "memory" int)
         (field "memoryLimit" int)
         (field "operations" float)
-        (maybe (field "creativityEnable" float))
+        (maybe (field "creativity" float))
 
 
 decodeProjectsModule : Decoder ProjectsModuleSave
