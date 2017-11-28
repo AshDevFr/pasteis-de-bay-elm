@@ -1,6 +1,5 @@
 module Projects.Model exposing (..)
 
-import Dict exposing (Dict)
 import Projects.Msg exposing (Msg)
 import Main.Model exposing (Model)
 
