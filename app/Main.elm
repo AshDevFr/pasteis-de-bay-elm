@@ -11,6 +11,7 @@ import Cheats.Model exposing (..)
 import Business as Business
 import Business.Msg
 import Manufacturing as Manufacturing exposing (..)
+import Manufacturing.Init as Manufacturing
 import Manufacturing.Msg
 import Computing as Computing
 import Main.View as Main

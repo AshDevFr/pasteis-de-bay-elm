@@ -5,11 +5,11 @@ import Html exposing (Html, div, button, text, h1)
 import Html.Events exposing (onClick)
 import Html.Attributes exposing (style, disabled)
 import Business as Business
-import Manufacturing exposing (..)
 import Manufacturing.Msg exposing (..)
 import Main.Model exposing (Model)
 import Main.Msg exposing (..)
 import Computing.View as Computing exposing (view)
+import Manufacturing.View as Manufacturing exposing (view)
 import Projects.View
 
 
