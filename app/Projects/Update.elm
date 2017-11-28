@@ -36,6 +36,7 @@ buy model cost =
         computingModule =
             Maybe.withDefault
                 { trust = 0
+                , trustLevel = 0
                 , processors = 0
                 , memory = 0
                 , memoryLimit = 0

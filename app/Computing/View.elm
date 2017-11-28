@@ -31,7 +31,7 @@ view model =
                     , div
                         []
                         [ div []
-                            [ text ("Next trust " ++ (formatInt usLocale ((nextTrust mod.trust + 1) * 1000)))
+                            [ text ("Next trust " ++ (formatInt usLocale ((nextTrust mod.trustLevel + 1) * 1000)))
                             ]
                         ]
                     , div

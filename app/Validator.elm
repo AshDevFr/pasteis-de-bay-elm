@@ -122,8 +122,9 @@ decodeMegaPasteisModule =
 
 decodeComputingModule : Decoder ComputingModule
 decodeComputingModule =
-    map6 ComputingModule
+    map7 ComputingModule
         (field "trust" int)
+        (field "trustLevel" int)
         (field "processors" int)
         (field "memory" int)
         (field "memoryLimit" int)

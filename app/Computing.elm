@@ -21,7 +21,7 @@ updateModel model =
             (\mod ->
                 let
                     addTrust =
-                        model.pasteis >= ((nextTrust mod.trust + 1) * 1000)
+                        model.pasteis >= ((nextTrust mod.trustLevel + 1) * 1000)
                 in
                     case addTrust of
                         False ->
@@ -33,6 +33,7 @@ updateModel model =
                             { mod
                                 | memoryLimit = mod.memory * 1000
                                 , trust = mod.trust + 1
+                                , trustLevel = mod.trustLevel + 1
                             }
             )
 
