@@ -179,7 +179,7 @@ makeOperations model =
             False ->
                 let
                     newOps =
-                        (toFloat model.processors) / 10
+                        (toFloat model.processors)
 
                     operations =
                         Basics.min (model.operations + newOps) (toFloat model.memoryLimit)
@@ -212,7 +212,7 @@ creativitySpeed processorsCount =
     (logBase 10 processorsCount)
         * (processorsCount ^ 1.1)
         + (processorsCount - 1)
-        |> flip (/) 400
+        |> flip (/) 40
 
 
 makeCreativity : ComputingModule -> ComputingModule
