@@ -14,6 +14,7 @@ type Msg
     | MapMarketingEffectiveness (Float -> Float)
     | MapDemandBoost (Float -> Float)
     | MapFunds (Float -> Float)
+    | MapDough (Int -> Int)
     | MapEnableCreativity
     | NoEffect
     | Identity

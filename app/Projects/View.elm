@@ -102,8 +102,7 @@ view model =
                     ]
                     [ div
                         []
-                        [ h2 [] [ text "Rewards" ]
-                        , h3 [] [ text "Select your reward" ]
+                        [ h2 [] [ text "Projects" ]
                         ]
                     , div
                         []
