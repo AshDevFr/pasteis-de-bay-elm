@@ -48,7 +48,7 @@ begForMoreWire : Project
 begForMoreWire =
     let
         projectCost =
-            ProjectCost 0 1000 0 0
+            ProjectCost 0 0 0 1
     in
         { id = "projectButton2"
         , name = "Beg for More Wire"
