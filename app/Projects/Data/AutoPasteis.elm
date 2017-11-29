@@ -58,12 +58,6 @@ improvedAutoPasteis2 =
                         model.projectsModule
                             |> Maybe.map (\mod -> Utils.isActivated mod "improvedAutoPasteis")
                             |> Maybe.withDefault False
-
-                    log1 =
-                        Debug.log "previousActivated" previousActivated
-
-                    log2 =
-                        Debug.log "enoughOps" enoughOps
                 in
                     (previousActivated && enoughOps)
             )

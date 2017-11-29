@@ -2,24 +2,15 @@ module Projects.Update
     exposing
         ( update
         , buy
+        , runTrigger
         )
 
 import Dict as Dict
 import Main.Model exposing (Model)
+import Projects.Init as Projects exposing (..)
 import Projects.Msg as Projects exposing (..)
-import Projects.Data exposing (allProjects)
 import Projects.Model exposing (Project, ProjectCost)
 import Projects.Module.ProjectsModule exposing (ProjectsModule)
-
-
-init : ProjectsModule
-init =
-    { projectsActivated = Dict.empty }
-
-
-initList : List Project
-initList =
-    allProjects
 
 
 update : Projects.Msg -> ProjectsModule -> ( ProjectsModule, Cmd msg )
@@ -63,3 +54,37 @@ buy model cost =
 
             True ->
                 Ok model
+
+
+runTrigger : Model -> Model
+runTrigger model =
+    model.projectsModule
+        |> Maybe.map
+            (\mod ->
+                List.foldl tryEnableProject model (inactiveList mod)
+            )
+        |> Maybe.withDefault model
+
+
+tryEnableProject : Project -> Model -> Model
+tryEnableProject project model =
+    model.projectsModule
+        |> Maybe.map
+            (\mod ->
+                case project.trigger model of
+                    False ->
+                        model
+
+                    True ->
+                        let
+                            projectsEnabled =
+                                Dict.insert project.id True mod.projectsEnabled
+
+                            newProjectsModule =
+                                { mod
+                                    | projectsEnabled = projectsEnabled
+                                }
+                        in
+                            { model | projectsModule = Just newProjectsModule }
+            )
+        |> Maybe.withDefault model

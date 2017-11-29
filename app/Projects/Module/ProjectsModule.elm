@@ -4,7 +4,9 @@ import Dict exposing (Dict)
 
 
 type alias ProjectsModule =
-    { projectsActivated : Dict String Bool }
+    { projectsActivated : Dict String Bool
+    , projectsEnabled : Dict String Bool
+    }
 
 
 type alias ProjectsModuleSave =

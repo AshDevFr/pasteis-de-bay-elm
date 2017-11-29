@@ -63,7 +63,12 @@ projectModuleToSave =
 
 saveToProjectModule : Maybe ProjectsModuleSave -> Maybe ProjectsModule
 saveToProjectModule =
-    Maybe.map (\mod -> { projectsActivated = fromList mod.projectsActivated })
+    Maybe.map
+        (\mod ->
+            { projectsActivated = fromList mod.projectsActivated
+            , projectsEnabled = Dict.empty
+            }
+        )
 
 
 decodeSaveModel : Decoder SaveModel

@@ -7,7 +7,7 @@ import Html exposing (..)
 import Html.Attributes exposing (disabled, style)
 import Html.Events exposing (onClick)
 import FormatNumber exposing (formatFloat, formatInt, usLocale)
-import Projects.Init exposing (initList)
+import Projects.Init exposing (activeList)
 import Main.Model as Main exposing (Model)
 import Main.Msg as Main exposing (..)
 import Projects.Model exposing (Project, ProjectCost)
@@ -106,7 +106,7 @@ view model =
                         ]
                     , div
                         []
-                        (List.indexedMap (flip projectView model) (initList mod))
+                        (List.indexedMap (flip projectView model) (activeList mod))
                     ]
             )
         |> Maybe.withDefault (text "")

@@ -365,6 +365,7 @@ updateModel model =
           }
             |> Projects.tryMakeProjectsModule
             |> Computing.tryMakeComputingModule
+            |> Projects.runTrigger
         , cmds
         )
 
