@@ -66,7 +66,7 @@ doughSupply2 =
     in
         { id = "doughSupply2"
         , name = "Optimized Dough creation"
-        , description = "75% more wire supply from every batch"
+        , description = "75% more dough supply from every batch"
         , trigger =
             (\model ->
                 model.projectsModule
@@ -89,7 +89,7 @@ doughSupply3 =
     in
         { id = "doughSupply3"
         , name = "Microlattice Shapecasting"
-        , description = "100% more wire supply from every batch"
+        , description = "100% more dough supply from every batch"
         , trigger =
             (\model ->
                 model.projectsModule
@@ -112,7 +112,7 @@ doughSupply4 =
     in
         { id = "doughSupply4"
         , name = "Spectral Froth Annealment"
-        , description = "200% more wire supply from every batch"
+        , description = "200% more dough supply from every batch"
         , trigger =
             (\model ->
                 model.projectsModule
@@ -135,7 +135,7 @@ doughSupply5 =
     in
         { id = "doughSupply5"
         , name = "Quantum Foam Annealment"
-        , description = "1,000% more wire supply from every batch"
+        , description = "1,000% more dough supply from every batch"
         , trigger =
             (\model ->
                 model.manufacturingModule.doughBasePrice >= 125
