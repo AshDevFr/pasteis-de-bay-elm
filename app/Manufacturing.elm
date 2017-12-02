@@ -225,8 +225,7 @@ makePasteis model =
                     }
             in
                 ( { model
-                    | pasteis = model.pasteis + fullPasteis
-                    , manufacturingModule = newManufacturingModule
+                    | manufacturingModule = newManufacturingModule
                   }
                 , Task.perform NewPasteisBaked (Task.succeed fullPasteis)
                 )
