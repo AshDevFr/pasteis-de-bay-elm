@@ -2,7 +2,7 @@
     "name": "Elm-paperPastel",
     "repository": "https://github.com/AshDevFr/elm-paperPastel",
     "env": {
-        "ELM_COMPILE": "make"
+        "ELM_COMPILE": "elm make app/Main.elm --output build/app.js"
     },
     "buildpacks": [
         {
