@@ -50,6 +50,7 @@ view model =
                         ]
                     ]
                 ]
+            , autoBuyerView model
             , pasteisView model
             , megaPasteisView model
             ]
@@ -121,3 +122,34 @@ megaPasteisView model =
                         ]
                 )
             |> Maybe.withDefault (div [] [ text "" ])
+
+
+autoBuyerView : Model -> Html Main.Msg
+autoBuyerView model =
+    model.manufacturingModule.doughAutoBuy
+        |> Maybe.map
+            (\doughAutoBuy ->
+                let
+                    btnText =
+                        case doughAutoBuy of
+                            False ->
+                                "OFF"
+
+                            True ->
+                                "ON"
+                in
+                    div
+                        [ style [ ( "margin-top", "10px" ) ] ]
+                        [ div []
+                            [ div []
+                                [ button
+                                    [ onClick (ManufacturingMessage ToggleAutoBuy)
+                                    ]
+                                    [ text "Auto buyer"
+                                    ]
+                                , text (" " ++ btnText)
+                                ]
+                            ]
+                        ]
+            )
+        |> Maybe.withDefault (text "")

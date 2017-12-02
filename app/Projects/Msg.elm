@@ -15,6 +15,8 @@ type Msg
     | MapDemandBoost (Float -> Float)
     | MapFunds (Float -> Float)
     | MapDough (Int -> Int)
+    | MapDoughAutoBuy
+    | MapEnableMegaPasteis
     | MapEnableCreativity
     | NoEffect
     | Identity

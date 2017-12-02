@@ -7,6 +7,7 @@ module Manufacturing
         , makePasteis
         , tryMakePasteisModule
         , tryMakeMegaPasteisModule
+        , enableMegaPasteisModule
         )
 
 import Main.Msg as Main exposing (Msg(..))
@@ -23,6 +24,8 @@ updateModel model business =
         | pasteisModule = (tryMakePasteisModule model business.funds)
         , megaPasteisModule = (tryMakeMegaPasteisModule model)
     }
+        |> flip maybeBuyDough business.funds
+        |> Tuple.first
 
 
 tryMakePasteisModule : ManufacturingModule -> Float -> Maybe PasteisModule
@@ -64,22 +67,25 @@ tryMakeMegaPasteisModule model =
                 Just { mod | cost = megaPasteisCost }
 
         Nothing ->
-            case model.pasteisModule of
-                Nothing ->
-                    Nothing
+            Nothing
 
-                Just pasteisModule ->
-                    case pasteisModule.level >= 75 of
-                        False ->
-                            Nothing
 
-                        True ->
-                            Just
-                                { cost = 1000
-                                , boost = 1
-                                , level = 0
-                                , factor = 500
-                                }
+enableMegaPasteisModule : ManufacturingModule -> ManufacturingModule
+enableMegaPasteisModule model =
+    case model.megaPasteisModule of
+        Just mod ->
+            model
+
+        Nothing ->
+            { model
+                | megaPasteisModule =
+                    Just
+                        { cost = 1000
+                        , boost = 1
+                        , level = 0
+                        , factor = 500
+                        }
+            }
 
 
 addPasteis : ManufacturingModule -> ManufacturingModule
@@ -145,6 +151,17 @@ update msg manufacturingModule =
 
         AddMegaPasteis ->
             addMegaPasteis manufacturingModule |> noEffects
+
+        ToggleAutoBuy ->
+            manufacturingModule.doughAutoBuy
+                |> Maybe.map
+                    (\doughAutoBuy ->
+                        { manufacturingModule
+                            | doughAutoBuy = Just (not doughAutoBuy)
+                        }
+                            |> noEffects
+                    )
+                |> Maybe.withDefault (manufacturingModule |> noEffects)
 
 
 createPastel : ManufacturingModule -> Int -> ( ManufacturingModule, Cmd Main.Msg )
@@ -232,17 +249,37 @@ moduleProduction model =
 
 
 buyDough : ManufacturingModule -> Float -> ( ManufacturingModule, Cmd Main.Msg )
-buyDough model funds =
+buyDough manufacturingModule funds =
     let
         cost =
-            toFloat model.doughCost
+            toFloat manufacturingModule.doughCost
     in
         if (funds < cost) then
-            ( model, Cmd.none )
+            ( manufacturingModule, Cmd.none )
         else
-            ( { model
-                | doughBasePrice = model.doughBasePrice + 0.05
-                , dough = model.dough + (floor model.doughSupply)
+            ( { manufacturingModule
+                | doughBasePrice = manufacturingModule.doughBasePrice + 0.05
+                , dough = manufacturingModule.dough + (floor manufacturingModule.doughSupply)
               }
             , Task.perform DoughtBought (Task.succeed cost)
             )
+
+
+maybeBuyDough : ManufacturingModule -> Float -> ( ManufacturingModule, Cmd Main.Msg )
+maybeBuyDough manufacturingModule funds =
+    case manufacturingModule.dough of
+        0 ->
+            manufacturingModule.doughAutoBuy
+                |> Maybe.map
+                    (\autoBuyer ->
+                        case autoBuyer of
+                            False ->
+                                ( manufacturingModule, Cmd.none )
+
+                            True ->
+                                buyDough manufacturingModule funds
+                    )
+                |> Maybe.withDefault ( manufacturingModule, Cmd.none )
+
+        _ ->
+            ( manufacturingModule, Cmd.none )

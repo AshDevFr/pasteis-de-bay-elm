@@ -32,7 +32,9 @@ import Json.Decode
         , list
         , string
         , index
+        , nullable
         )
+import Json.Decode.Pipeline exposing (decode, required)
 
 
 saveToModel : SaveModel -> Model
@@ -96,15 +98,16 @@ decodeBusinessModule =
 
 decodeManufacturingModule : Decoder ManufacturingModule
 decodeManufacturingModule =
-    map8 ManufacturingModule
-        (field "dough" int)
-        (field "doughSupply" float)
-        (field "doughCost" int)
-        (field "doughBasePrice" float)
-        (maybe (field "pasteisModule" decodePasteisModule))
-        (maybe (field "megaPasteisModule" decodeMegaPasteisModule))
-        (field "partialPasteis" float)
-        (field "pasteisMakerRate" float)
+    decode ManufacturingModule
+        |> required "dough" int
+        |> required "doughSupply" float
+        |> required "doughCost" int
+        |> required "doughBasePrice" float
+        |> required "doughAutoBuy" (nullable bool)
+        |> required "pasteisModule" (nullable decodePasteisModule)
+        |> required "megaPasteisModule" (nullable decodeMegaPasteisModule)
+        |> required "partialPasteis" float
+        |> required "pasteisMakerRate" float
 
 
 decodePasteisModule : Decoder PasteisModule

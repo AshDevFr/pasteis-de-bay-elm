@@ -12,6 +12,7 @@ init =
     , doughSupply = 1000
     , doughCost = 15
     , doughBasePrice = 15
+    , doughAutoBuy = Nothing
     , pasteisModule = Nothing
     , megaPasteisModule = Nothing
     , partialPasteis = 0

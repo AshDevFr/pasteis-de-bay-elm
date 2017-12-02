@@ -6,6 +6,7 @@ type alias ManufacturingModule =
     , doughSupply : Float
     , doughCost : Int
     , doughBasePrice : Float
+    , doughAutoBuy : Maybe Bool
     , pasteisModule : Maybe PasteisModule
     , megaPasteisModule : Maybe MegaPasteisModule
     , partialPasteis : Float

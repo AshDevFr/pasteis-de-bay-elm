@@ -291,6 +291,23 @@ update msg model =
                                             )
                                         |> Maybe.withDefault model
 
+                                Projects.MapEnableMegaPasteis ->
+                                    { model
+                                        | manufacturingModule = Manufacturing.enableMegaPasteisModule model.manufacturingModule
+                                    }
+
+                                Projects.MapDoughAutoBuy ->
+                                    let
+                                        manufacturingModule =
+                                            model.manufacturingModule
+
+                                        newManufacturingModule =
+                                            { manufacturingModule
+                                                | doughAutoBuy = Just True
+                                            }
+                                    in
+                                        { model | manufacturingModule = newManufacturingModule }
+
                                 Projects.MapCreativity fn ->
                                     model.computingModule
                                         |> Maybe.map

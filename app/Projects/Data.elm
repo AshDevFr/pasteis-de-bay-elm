@@ -8,6 +8,7 @@ import Projects.Msg exposing (Msg(..))
 import Projects.Data.Utils as Utils
 import Projects.Data.AutoPasteis as AutoPasteis
 import Projects.Data.AutoMegaPasteis as AutoMegaPasteis
+import Projects.Data.Dough as Dough
 
 
 allProjects : List Project
@@ -18,6 +19,7 @@ allProjects =
           ]
         , AutoPasteis.allProjects
         , AutoMegaPasteis.allProjects
+        , Dough.allProjects
         ]
 
 
