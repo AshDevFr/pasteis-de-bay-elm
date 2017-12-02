@@ -9,6 +9,8 @@ import Projects.Data.Utils as Utils
 import Projects.Data.AutoPasteis as AutoPasteis
 import Projects.Data.AutoMegaPasteis as AutoMegaPasteis
 import Projects.Data.Dough as Dough
+import Projects.Data.Marketing as Marketing
+import Projects.Data.Trust as Trust
 
 
 allProjects : List Project
@@ -20,6 +22,8 @@ allProjects =
         , AutoPasteis.allProjects
         , AutoMegaPasteis.allProjects
         , Dough.allProjects
+        , Marketing.allProjects
+        , Trust.allProjects
         ]
 
 

@@ -10,7 +10,7 @@ type Msg
     | MapPasteisBoost (Float -> Float)
     | MapMegaPasteisBoost (Float -> Float)
     | MapTrust (Int -> Int)
-    | MapWireSupply (Float -> Float)
+    | MapDoughSupply (Float -> Float)
     | MapMarketingEffectiveness (Float -> Float)
     | MapDemandBoost (Float -> Float)
     | MapFunds (Float -> Float)

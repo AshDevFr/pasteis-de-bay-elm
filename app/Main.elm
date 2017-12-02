@@ -225,7 +225,7 @@ update msg model =
                                     in
                                         { model | manufacturingModule = newManufacturingModule }
 
-                                Projects.MapWireSupply fn ->
+                                Projects.MapDoughSupply fn ->
                                     let
                                         manufacturingModule =
                                             model.manufacturingModule
