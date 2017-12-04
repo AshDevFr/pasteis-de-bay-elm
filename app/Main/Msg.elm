@@ -22,4 +22,4 @@ type Msg
     | NewPasteisBaked Int
     | DoughtBought Float
     | ActivateProject Project
-    | Cheat CheatModel
+    | ApplyCheat CheatModel

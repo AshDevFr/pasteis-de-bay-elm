@@ -4,35 +4,35 @@ module Cheats
         )
 
 import Main.Model exposing (Model)
-import Cheats.Model exposing (CheatModel)
+import Cheats.Model exposing (CheatModel(..))
 import Manufacturing as Manufacturing
 
 
 execute : Model -> CheatModel -> Model
 execute model cheat =
-    case cheat.action of
-        "addFunds" ->
-            addFunds model cheat.amount
+    case cheat of
+        AddFunds funds ->
+            addFunds model funds
 
-        "addItems" ->
-            addItems model cheat.amount
+        AddItems quantity ->
+            addItems model quantity
 
-        "addAutoPasteis" ->
-            addAutoPasteis model cheat.amount
+        AddAutoPasteis quantity ->
+            addAutoPasteis model quantity
 
-        "addAutoMegaPasteis" ->
-            addAutoMegaPasteis model cheat.amount
+        AddAutoMegaPasteis quantity ->
+            addAutoMegaPasteis model quantity
 
-        "addDough" ->
-            addDough model cheat.amount
+        AddDough quantity ->
+            addDough model quantity
 
-        "addOps" ->
-            addOps model cheat.amount
+        AddOps operations ->
+            addOps model operations
 
-        "addCreativity" ->
-            addCreativity model cheat.amount
+        AddCreativity quantity ->
+            addCreativity model quantity
 
-        _ ->
+        DoNothing ->
             model
 
 

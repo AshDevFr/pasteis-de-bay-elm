@@ -1,7 +1,12 @@
-module Cheats.Model exposing (CheatModel)
+module Cheats.Model exposing (..)
 
 
-type alias CheatModel =
-    { action : String
-    , amount : Int
-    }
+type CheatModel
+    = AddFunds Int
+    | AddOps Int
+    | AddItems Int
+    | AddAutoPasteis Int
+    | AddAutoMegaPasteis Int
+    | AddDough Int
+    | AddCreativity Int
+    | DoNothing

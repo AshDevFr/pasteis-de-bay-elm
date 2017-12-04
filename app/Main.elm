@@ -3,7 +3,8 @@ port module Main exposing (..)
 import Html exposing (..)
 import Time exposing (Time, every, second, millisecond)
 import Random
-import Json.Decode as Decode exposing (decodeValue, map)
+import Json.Encode
+import Json.Decode as Decode exposing (Decoder, decodeValue, map)
 import Utils exposing (..)
 import Validator exposing (decodeSaveModel, saveToModel, modelToSave)
 import Cheats as Cheats
@@ -38,7 +39,7 @@ main =
 port saveState : SaveModel -> Cmd msg
 
 
-port cheats : (CheatModel -> msg) -> Sub msg
+port cheats : (Json.Encode.Value -> msg) -> Sub msg
 
 
 emptyModel : Model
@@ -351,7 +352,7 @@ update msg model =
                     |> Result.withDefault model
                     |> flip (,) Cmd.none
 
-        Cheat cheat ->
+        ApplyCheat cheat ->
             ( Cheats.execute model cheat, Cmd.none )
 
 
@@ -359,8 +360,84 @@ subscriptions : Model -> Sub Msg
 subscriptions model =
     Sub.batch
         [ every (100 * millisecond) Tick
-        , cheats Cheat
+        , cheats (toCheat >> ApplyCheat)
         ]
+
+
+addFundsDecoder : Decoder CheatModel
+addFundsDecoder =
+    Decode.map AddFunds (Decode.field "funds" Decode.int)
+
+
+addOpsDecoder : Decoder CheatModel
+addOpsDecoder =
+    Decode.map AddOps (Decode.field "quantity" Decode.int)
+
+
+addItemsDecoder : Decoder CheatModel
+addItemsDecoder =
+    Decode.map AddItems (Decode.field "quantity" Decode.int)
+
+
+addAutoPasteisDecoder : Decoder CheatModel
+addAutoPasteisDecoder =
+    Decode.map AddAutoPasteis (Decode.field "quantity" Decode.int)
+
+
+addAutoMegaPasteisDecoder : Decoder CheatModel
+addAutoMegaPasteisDecoder =
+    Decode.map AddAutoMegaPasteis (Decode.field "quantity" Decode.int)
+
+
+addDoughDecoder : Decoder CheatModel
+addDoughDecoder =
+    Decode.map AddDough (Decode.field "quantity" Decode.int)
+
+
+addCreativityDecoder : Decoder CheatModel
+addCreativityDecoder =
+    Decode.map AddCreativity (Decode.field "quantity" Decode.int)
+
+
+cheatFromType : String -> Decoder CheatModel
+cheatFromType string =
+    case string of
+        "addFunds" ->
+            addFundsDecoder
+
+        "addOps" ->
+            addOpsDecoder
+
+        "addItems" ->
+            addItemsDecoder
+
+        "addAutoPasteis" ->
+            addAutoPasteisDecoder
+
+        "addAutoMegaPasteis" ->
+            addAutoMegaPasteisDecoder
+
+        "addDough" ->
+            addDoughDecoder
+
+        "addCreativity" ->
+            addCreativityDecoder
+
+        _ ->
+            Decode.fail ("Invalid cheat type: " ++ string)
+
+
+cheatDecoder : Decoder CheatModel
+cheatDecoder =
+    Decode.field "action" Decode.string
+        |> Decode.andThen cheatFromType
+
+
+toCheat : Json.Encode.Value -> CheatModel
+toCheat encodedValue =
+    encodedValue
+        |> Decode.decodeValue cheatDecoder
+        |> Result.withDefault DoNothing
 
 
 updateModel : Model -> ( Model, Cmd Main.Msg )

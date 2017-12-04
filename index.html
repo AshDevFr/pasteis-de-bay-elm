@@ -20,13 +20,13 @@
     });
 
     window._cheats = {
-      addFunds: (number = 1000) => _cheat({action: 'addFunds', amount: number}),
-      addItems: (number = 1000) => _cheat({action: 'addItems', amount: number}),
-      addAutoPasteis: (number = 10) => _cheat({action: 'addAutoPasteis', amount: number}),
-      addAutoMegaPasteis: (number = 10) => _cheat({action: 'addAutoMegaPasteis', amount: number}),
-      addDough: (number = 10000) => _cheat({action: 'addDough', amount: number}),
-      addOps: (number = 1000) => _cheat({action: 'addOps', amount: number}),
-      addCreativity: (number = 100) => _cheat({action: 'addCreativity', amount: number})
+      addFunds: (number = 1000) => _cheat({action: 'addFunds', funds: number}),
+      addItems: (number = 1000) => _cheat({action: 'addItems', quantity: number}),
+      addAutoPasteis: (number = 10) => _cheat({action: 'addAutoPasteis', quantity: number}),
+      addAutoMegaPasteis: (number = 10) => _cheat({action: 'addAutoMegaPasteis', quantity: number}),
+      addDough: (number = 10000) => _cheat({action: 'addDough', quantity: number}),
+      addOps: (number = 1000) => _cheat({action: 'addOps', operations: number}),
+      addCreativity: (number = 100) => _cheat({action: 'addCreativity', quantity: number})
     }
 
     function _cheat(params) {
