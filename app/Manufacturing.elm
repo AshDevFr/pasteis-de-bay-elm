@@ -24,8 +24,6 @@ updateModel model business =
         | pasteisModule = (tryMakePasteisModule model business.funds)
         , megaPasteisModule = (tryMakeMegaPasteisModule model)
     }
-        |> flip maybeBuyDough business.funds
-        |> Tuple.first
 
 
 tryMakePasteisModule : ManufacturingModule -> Float -> Maybe PasteisModule
@@ -176,59 +174,74 @@ createPastel manufacturingModule availableDough =
 
 makePasteis : Model -> ( Model, Cmd Main.Msg )
 makePasteis model =
-    case model.manufacturingModule.dough of
-        0 ->
-            let
-                manufacturingModule =
-                    model.manufacturingModule
+    let
+        autoBuyerOn =
+            model.manufacturingModule.doughAutoBuy
+                |> Maybe.map
+                    (\autoBuyer ->
+                        autoBuyer
+                    )
+                |> Maybe.withDefault False
 
-                newManufacturingModule =
-                    { manufacturingModule
-                        | pasteisMakerRate = 0
-                        , partialPasteis = 0
-                    }
-            in
-                ( { model
-                    | manufacturingModule = newManufacturingModule
-                  }
-                , Cmd.none
-                )
+        canMakePasteis =
+            (model.manufacturingModule.dough > 0) || autoBuyerOn
+    in
+        case canMakePasteis of
+            False ->
+                let
+                    manufacturingModule =
+                        model.manufacturingModule
 
-        _ ->
-            let
-                autoPasteisAmount =
-                    moduleProduction model.manufacturingModule.pasteisModule
+                    newManufacturingModule =
+                        { manufacturingModule
+                            | pasteisMakerRate = 0
+                            , partialPasteis = 0
+                        }
+                in
+                    ( { model
+                        | manufacturingModule = newManufacturingModule
+                      }
+                    , Cmd.none
+                    )
 
-                megaPasteisAmount =
-                    moduleProduction model.manufacturingModule.megaPasteisModule
+            True ->
+                let
+                    autoPasteisAmount =
+                        moduleProduction model.manufacturingModule.pasteisModule
 
-                partialPasteisCapacity =
-                    model.manufacturingModule.partialPasteis + autoPasteisAmount + megaPasteisAmount
+                    megaPasteisAmount =
+                        moduleProduction model.manufacturingModule.megaPasteisModule
 
-                fullPasteisCapacity =
-                    floor partialPasteisCapacity
+                    partialPasteisCapacity =
+                        model.manufacturingModule.partialPasteis + autoPasteisAmount + megaPasteisAmount
 
-                pasteisMakerRate =
-                    (Basics.min (autoPasteisAmount + megaPasteisAmount) (toFloat model.manufacturingModule.dough)) * 10
+                    fullPasteisCapacity =
+                        floor partialPasteisCapacity
 
-                fullPasteis =
-                    Basics.min fullPasteisCapacity model.manufacturingModule.dough
+                    ( manufacturingModule, cost ) =
+                        maybeBuyDough model.manufacturingModule model.businessModule (fullPasteisCapacity - model.manufacturingModule.dough)
 
-                manufacturingModule =
-                    model.manufacturingModule
+                    pasteisMakerRate =
+                        (Basics.min (autoPasteisAmount + megaPasteisAmount) (toFloat manufacturingModule.dough)) * 10
 
-                newManufacturingModule =
-                    { manufacturingModule
-                        | partialPasteis = partialPasteisCapacity - (toFloat fullPasteisCapacity)
-                        , dough = model.manufacturingModule.dough - fullPasteis
-                        , pasteisMakerRate = pasteisMakerRate
-                    }
-            in
-                ( { model
-                    | manufacturingModule = newManufacturingModule
-                  }
-                , Task.perform NewPasteisBaked (Task.succeed fullPasteis)
-                )
+                    fullPasteis =
+                        Basics.min fullPasteisCapacity manufacturingModule.dough
+
+                    newManufacturingModule =
+                        { manufacturingModule
+                            | partialPasteis = partialPasteisCapacity - (toFloat fullPasteisCapacity)
+                            , dough = manufacturingModule.dough - fullPasteis
+                            , pasteisMakerRate = pasteisMakerRate
+                        }
+                in
+                    ( { model
+                        | manufacturingModule = newManufacturingModule
+                      }
+                    , Cmd.batch
+                        [ Task.perform NewPasteisBaked (Task.succeed fullPasteis)
+                        , Task.perform DoughtBought (Task.succeed cost)
+                        ]
+                    )
 
 
 {-| Use an extensible record to enable row polymorphism
@@ -264,21 +277,58 @@ buyDough manufacturingModule funds =
             )
 
 
-maybeBuyDough : ManufacturingModule -> Float -> ( ManufacturingModule, Cmd Main.Msg )
-maybeBuyDough manufacturingModule funds =
-    case manufacturingModule.dough of
-        0 ->
-            manufacturingModule.doughAutoBuy
-                |> Maybe.map
-                    (\autoBuyer ->
-                        case autoBuyer of
-                            False ->
-                                ( manufacturingModule, Cmd.none )
+autoBuyDough : ManufacturingModule -> BusinessModule -> ( ManufacturingModule, BusinessModule, Float )
+autoBuyDough manufacturingModule businessModule =
+    let
+        cost =
+            toFloat manufacturingModule.doughCost
+    in
+        if (businessModule.funds < cost) then
+            ( manufacturingModule, businessModule, 0 )
+        else
+            ( { manufacturingModule
+                | doughBasePrice = manufacturingModule.doughBasePrice + 0.05
+                , dough = manufacturingModule.dough + (floor manufacturingModule.doughSupply)
+              }
+            , { businessModule | funds = businessModule.funds - cost }
+            , cost
+            )
 
-                            True ->
-                                buyDough manufacturingModule funds
-                    )
-                |> Maybe.withDefault ( manufacturingModule, Cmd.none )
 
-        _ ->
-            ( manufacturingModule, Cmd.none )
+maybeBuyDough : ManufacturingModule -> BusinessModule -> Int -> ( ManufacturingModule, Float )
+maybeBuyDough manufacturingModule businessModule neededDough =
+    let
+        neededSupplies =
+            ceiling ((toFloat neededDough) / manufacturingModule.doughSupply)
+
+        needToBuy =
+            neededSupplies > 0
+    in
+        case needToBuy of
+            False ->
+                ( manufacturingModule, 0 )
+
+            True ->
+                manufacturingModule.doughAutoBuy
+                    |> Maybe.map
+                        (\autoBuyer ->
+                            case autoBuyer of
+                                False ->
+                                    ( manufacturingModule, 0 )
+
+                                True ->
+                                    let
+                                        buyingOps =
+                                            List.range 1 neededSupplies
+
+                                        ( newManufacturingModule, newBusinessModule, cost ) =
+                                            List.foldl
+                                                (\it ( manufacturingMod, businessMod, cost ) ->
+                                                    autoBuyDough manufacturingMod businessMod
+                                                )
+                                                ( manufacturingModule, businessModule, 0 )
+                                                buyingOps
+                                    in
+                                        ( newManufacturingModule, cost )
+                        )
+                    |> Maybe.withDefault ( manufacturingModule, 0 )
