@@ -371,7 +371,7 @@ addFundsDecoder =
 
 addOpsDecoder : Decoder CheatModel
 addOpsDecoder =
-    Decode.map AddOps (Decode.field "quantity" Decode.int)
+    Decode.map AddOps (Decode.field "operations" Decode.int)
 
 
 addItemsDecoder : Decoder CheatModel
