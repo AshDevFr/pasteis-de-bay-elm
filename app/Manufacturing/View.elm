@@ -30,7 +30,7 @@ view model =
             [ div
                 [ style [ ( "flex-direction", "column" ) ] ]
                 [ h2 [] [ text "Manufacturing" ]
-                , h3 [] [ text ("Pasteis per Second: " ++ (manufacturingModule.pasteisMakerRate |> round |> toString)) ]
+                , h3 [] [ text ("Pasteis per Second: " ++ (manufacturingModule.pasteisMakerRate |> round |> (formatInt usLocale))) ]
                 ]
             , div
                 []
