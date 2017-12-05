@@ -87,7 +87,7 @@ statsView model =
                 div []
                     [ div
                         []
-                        [ text ("Avg. Rev. per sec: " ++ (formatFloat usLocale stats.revPerSec)) ]
+                        [ text ("Avg. Rev. per sec: $ " ++ (formatFloat usLocale stats.revPerSec)) ]
                     , div
                         []
                         [ text ("Avg. Pasteis Sold per sec: " ++ (formatFloat usLocale stats.salesPerSec)) ]
