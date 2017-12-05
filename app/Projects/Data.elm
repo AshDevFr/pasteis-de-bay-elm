@@ -16,7 +16,8 @@ import Projects.Data.Trust as Trust
 allProjects : List Project
 allProjects =
     List.concat
-        [ [ creativity
+        [ [ stats
+          , creativity
           , begForMoreWire
           ]
         , AutoPasteis.allProjects
@@ -25,6 +26,25 @@ allProjects =
         , Marketing.allProjects
         , Trust.allProjects
         ]
+
+
+stats : Project
+stats =
+    let
+        projectCost =
+            ProjectCost 0 500 0 0
+    in
+        { id = "stats"
+        , name = "Enable business stats"
+        , description = "Automatically calculates average revenue per second"
+        , trigger =
+            (always True)
+        , effect =
+            List.append (Utils.costEffectList projectCost)
+                [ MapEnableStats
+                ]
+        , cost = projectCost
+        }
 
 
 creativity : Project

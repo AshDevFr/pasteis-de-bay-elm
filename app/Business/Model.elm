@@ -1,4 +1,4 @@
-module Business.Model exposing (BusinessModule)
+module Business.Model exposing (BusinessModule, StatsModule)
 
 
 type alias BusinessModule =
@@ -10,4 +10,12 @@ type alias BusinessModule =
     , marketingCost : Int
     , marketingLvl : Int
     , marketingEffectiveness : Float
+    , statsModule : Maybe StatsModule
+    }
+
+
+type alias StatsModule =
+    { revPerSec : Float
+    , salesPerSec : Float
+    , lastSales : List ( Int, Float )
     }

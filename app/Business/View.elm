@@ -30,6 +30,7 @@ view model =
                 [ h2 [] [ text "Business" ]
                 , h3 [] [ text ("Available Funds: $ " ++ (formatFloat usLocale businessModule.funds)) ]
                 ]
+            , statsView model
             , div
                 []
                 [ text ("Unsold Inventory: " ++ (formatInt usLocale businessModule.inventory)) ]
@@ -76,3 +77,20 @@ view model =
                     ]
                 ]
             ]
+
+
+statsView : Model -> Html Main.Msg
+statsView model =
+    model.businessModule.statsModule
+        |> Maybe.map
+            (\stats ->
+                div []
+                    [ div
+                        []
+                        [ text ("Avg. Rev. per sec: " ++ (formatFloat usLocale stats.revPerSec)) ]
+                    , div
+                        []
+                        [ text ("Avg. Pasteis Sold per sec: " ++ (formatFloat usLocale stats.salesPerSec)) ]
+                    ]
+            )
+        |> Maybe.withDefault (text "")

@@ -18,5 +18,6 @@ type Msg
     | MapDoughAutoBuy
     | MapEnableMegaPasteis
     | MapEnableCreativity
+    | MapEnableStats
     | NoEffect
     | Identity

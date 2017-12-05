@@ -7,7 +7,7 @@ module Validator
 
 import Dict exposing (toList, fromList)
 import Projects.Module.ProjectsModule exposing (ProjectsModule, ProjectsModuleSave)
-import Business.Model exposing (BusinessModule)
+import Business.Model exposing (BusinessModule, StatsModule)
 import Manufacturing.Model exposing (ManufacturingModule, PasteisModule, MegaPasteisModule)
 import Computing.Model exposing (ComputingModule)
 import Main.Model exposing (SaveModel, Model)
@@ -85,15 +85,29 @@ decodeSaveModel =
 
 decodeBusinessModule : Decoder BusinessModule
 decodeBusinessModule =
-    map8 BusinessModule
-        (field "funds" float)
-        (field "inventory" int)
-        (field "price" float)
-        (field "demand" float)
-        (field "demandBoost" float)
-        (field "marketingCost" int)
-        (field "marketingLvl" int)
-        (field "marketingEffectiveness" float)
+    decode BusinessModule
+        |> required "funds" float
+        |> required "inventory" int
+        |> required "price" float
+        |> required "demand" float
+        |> required "demandBoost" float
+        |> required "marketingCost" int
+        |> required "marketingLvl" int
+        |> required "marketingEffectiveness" float
+        |> required "statsModule" (nullable decodeStatsModule)
+
+
+decodeStatsModule : Decoder StatsModule
+decodeStatsModule =
+    decode StatsModule
+        |> required "revPerSec" float
+        |> required "salesPerSec" float
+        |> required "lastSales" (list decoderLastSells)
+
+
+decoderLastSells : Decoder ( Int, Float )
+decoderLastSells =
+    map2 (,) (index 0 int) (index 1 float)
 
 
 decodeManufacturingModule : Decoder ManufacturingModule

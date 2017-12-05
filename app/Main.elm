@@ -292,6 +292,9 @@ update msg model =
                                             )
                                         |> Maybe.withDefault model
 
+                                Projects.MapEnableStats ->
+                                    { model | businessModule = (Business.enableStats model.businessModule) }
+
                                 Projects.MapEnableMegaPasteis ->
                                     { model
                                         | manufacturingModule = Manufacturing.enableMegaPasteisModule model.manufacturingModule

@@ -2,6 +2,7 @@ module Business.Update
     exposing
         ( init
         , update
+        , enableStats
         )
 
 import Business.Msg as Business exposing (..)
@@ -19,6 +20,7 @@ init =
     , marketingCost = 100
     , marketingLvl = 1
     , marketingEffectiveness = 1
+    , statsModule = Nothing
     }
 
 
@@ -49,3 +51,15 @@ update msg businessModule =
                     flip addItems cnt
     in
         ( fn businessModule, Cmd.none )
+
+
+enableStats : BusinessModule -> BusinessModule
+enableStats businessModule =
+    { businessModule
+        | statsModule =
+            Just
+                { revPerSec = 0
+                , salesPerSec = 0
+                , lastSales = []
+                }
+    }
