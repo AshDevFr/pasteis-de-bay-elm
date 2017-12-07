@@ -496,7 +496,7 @@ applyTime model time =
                 |> Maybe.withDefault 1
 
         step : Int -> ( ( Model, Cmd Msg ), Random.Seed ) -> ( ( Model, Cmd Msg ), Random.Seed )
-        step it ( ( model, msg ), seed ) =
+        step it ( ( model, previousStepCmds ), seed ) =
             let
                 ( pasteisSimulation, seed1 ) =
                     Utils.randomFloat 0 100 seed
@@ -504,7 +504,7 @@ applyTime model time =
                 ( doughCostSimulation, seed2 ) =
                     Utils.randomFloat 0 100 seed1
             in
-                ( applyTime_ model (Simulations pasteisSimulation doughCostSimulation), seed2 )
+                ( applyTime_ model previousStepCmds (Simulations pasteisSimulation doughCostSimulation), seed2 )
 
         range =
             List.range 1 operationsToRun
@@ -520,10 +520,10 @@ view =
     Main.view
 
 
-applyTime_ : Model -> Simulations -> ( Model, Cmd Msg )
-applyTime_ model { pasteisSimulation, doughCostSimulation } =
+applyTime_ : Model -> Cmd Msg -> Simulations -> ( Model, Cmd Msg )
+applyTime_ model previousStepCmds { pasteisSimulation, doughCostSimulation } =
     let
-        ( bm, cmds ) =
+        ( bm, businessCmds ) =
             Business.update (Business.Msg.SellPasteis pasteisSimulation) model.businessModule
     in
         { model
@@ -531,13 +531,13 @@ applyTime_ model { pasteisSimulation, doughCostSimulation } =
             , manufacturingModule = Manufacturing.adjustdoughCost model.manufacturingModule doughCostSimulation
         }
             |> Manufacturing.makePasteis
-            |> (\( mod, cmds1 ) ->
+            |> (\( mod, mkPasteisCms ) ->
                     makeOperations mod
-                        |> (\( mod2, cmds2 ) -> ( mod2, Cmd.batch [ cmds, cmds1, cmds2 ] ))
+                        |> (\( mod2, mkOpsCmds ) -> ( mod2, Cmd.batch [ previousStepCmds, businessCmds, mkPasteisCms, mkOpsCmds ] ))
                )
-            |> (\( mod, cmds1 ) ->
+            |> (\( mod, mkOpsCmds ) ->
                     updateModel mod
-                        |> (\( mod2, cmds2 ) -> ( mod2, Cmd.batch [ cmds1, cmds2 ] ))
+                        |> (\( mod2, updateCmds ) -> ( mod2, Cmd.batch [ mkOpsCmds, updateCmds ] ))
                )
 
 
