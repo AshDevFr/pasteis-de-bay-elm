@@ -15,7 +15,7 @@
     var storedState = localStorage.getItem('elm-paperPastel');
     var startingState = storedState ? JSON.parse(storedState) : null;
     var mainApp = Elm.Main.fullscreen(startingState);
-    mainApp.ports.saveState.subscribe(function(state) {
+    mainApp.ports.savePort.subscribe(function(state) {
       localStorage.setItem('elm-paperPastel', JSON.stringify(state));
     });
 
